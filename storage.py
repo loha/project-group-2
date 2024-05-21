@@ -35,6 +35,11 @@ def get_birthday_by_name(name):
 def get_birthdays():
   return address_book.get_upcoming_birthdays()
 
+def delete_user_by_id(id):
+  message = address_book.delete_record_by_id(id)
+  serialize()
+  return message
+
 def serialize():
   current_dir = str(Path(__file__).with_name("data.pickle"))
   with open(current_dir, 'wb') as f:

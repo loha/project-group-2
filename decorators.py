@@ -92,3 +92,17 @@ def show_birthday_validation(func):
       print("Give me valid id(UUID) and date(YYYY.MM.DD) please.")
 
   return inner
+
+def delete_user(func):
+  def inner(*args, **kwargs):
+    try:
+      payload = args[0]
+
+      if not is_uuid(payload[0]):
+        raise ValueError
+      
+      return func(*args, **kwargs)
+    except ValueError:
+      print("Give me valid id(UUID)")
+
+  return inner

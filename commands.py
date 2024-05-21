@@ -1,7 +1,7 @@
 import sys
 
-from decorators import body_parser, add_user_validation, edit_user_by_id_validation, get_phone_validation, add_birthday_validation, show_birthday_validation
-from storage import add_user_to_store, find_all_users_from_store, update_user_by_id, get_user_phone_by_name, add_birthday_to_user, get_birthday_by_name, get_birthdays
+from decorators import body_parser, add_user_validation, edit_user_by_id_validation, get_phone_validation, add_birthday_validation, show_birthday_validation, delete_user
+from storage import add_user_to_store, find_all_users_from_store, update_user_by_id, get_user_phone_by_name, add_birthday_to_user, get_birthday_by_name, get_birthdays, delete_user_by_id
 
 @body_parser
 def run(cmd: str, payload):
@@ -31,6 +31,7 @@ List app commands:
   8. "~$/add_birthday [id<UUID>] [date<Date>]" - add birthday to user. date format: "YYYY.MM.DD"
   9. "~$/show_birthday [name<str>]" - show birthday by name
   10."~$/birthdays" - show all upcoming birthdays
+  11."~$/delete [id<UUID>]
 """ 
   print(help_str)
 
@@ -103,6 +104,12 @@ def birthdays():
   for item in result:
     print(f"{item["name"]}: {item["congratulation_date"]}\n")
 
+@delete_user
+def delete_user(payload):
+   id = payload[0]
+   message = delete_user_by_id(id)
+   print(f"{message}")
+
 commands = {
   "help": {
     "handler": help_app,
@@ -136,5 +143,8 @@ commands = {
   },
   "birthdays": {
     "handler": birthdays
+  },
+  "delete": {
+    "handler": delete_user
   }
 }

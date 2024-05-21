@@ -142,3 +142,12 @@ class AddressBook:
         })
 
     return result_records
+  
+  def delete_record_by_id(self, id):
+    message = 'Record not found'
+    for index, record in enumerate(self.records):
+        for field in record.fields:
+          if field.get_field_name() == "ID" and field.get_field_value() == id:
+            del self.records[index]
+            message = 'Record deleted'
+    return message
