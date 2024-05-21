@@ -16,4 +16,4 @@ def is_date(value):
     return bool(match)
 
 def is_email(value:str):
-   return bool(re.match(r"\w+@\w+\.\w+",value))
+   return bool(re.match(r"\w+@\w+\.\w+", value))

@@ -99,7 +99,10 @@ def email_validation(func):
     try:
       payload = args[0]
 
-      if not is_email(payload[0]):
+      if not is_uuid(payload[0]):
+        raise ValueError
+
+      if not is_email(payload[1]):
         raise ValueError
 
       return func(*args, **kwargs)
