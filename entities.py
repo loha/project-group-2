@@ -31,6 +31,13 @@ class Phone(Field):
     self.set_field_name("Phone")
     self.set_value(value)
 
+class Email(Field):
+  def __init__(self, value) -> None:
+    super().__init__()
+    self.set_field_name("Email")
+    self.set_value(value)
+
+
 class Id(Field):
   def __init__(self) -> None:
     super().__init__()
@@ -123,6 +130,19 @@ class AddressBook:
 
     return True
   
+  def add_email(self, id, field: Email):
+    record = self.get_record_by_id(id)
+
+    if not record:
+      return False
+    
+    record.add_field(field)
+
+    return True
+
+
+
+
   def get_records(self):
     return list(map(lambda record: str(record).strip(), self.records))
   

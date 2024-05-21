@@ -14,3 +14,6 @@ def is_uuid(uuid_string):
 def is_date(value):
     match = re.search(r"^\d{4}\.\d{2}.\d{2}$", value)
     return bool(match)
+
+def is_email(value:str):
+   return bool(re.match(r"\w+@\w+\.\w+",value))

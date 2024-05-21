@@ -1,6 +1,6 @@
 import pickle
 from pathlib import Path
-from entities import AddressBook, Name, Phone, Id, Birthday
+from entities import AddressBook, Name, Phone, Id, Birthday, Email
 
 def add_user_to_store(name, phone):
   id_record = Id()
@@ -28,6 +28,15 @@ def add_birthday_to_user(id, date):
   result = address_book.add_birthday_by_id(id, birthday)
   serialize()
   return result;
+
+def add_email_to_user(id, email):
+  email=Email(email)
+  result = address_book.add_email(id, email)
+  serialize()
+  return result;
+
+
+
 
 def get_birthday_by_name(name):
   return address_book.get_record_by_field("Name", name, "Birthday")
