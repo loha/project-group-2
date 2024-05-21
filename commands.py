@@ -1,6 +1,6 @@
 import sys
 
-from decorators import body_parser, add_user_validation, edit_user_by_id_validation, get_phone_validation, add_birthday_validation, show_birthday_validation
+from decorators import body_parser, add_user_validation, edit_user_by_id_validation, get_phone_validation, add_birthday_validation, show_birthday_validation, add_address_validation
 from storage import add_user_to_store, find_all_users_from_store, update_user_by_id, get_user_phone_by_name, add_birthday_to_user, get_birthday_by_name, get_birthdays
 
 @body_parser
@@ -31,7 +31,9 @@ List app commands:
   8. "~$/add_birthday [id<UUID>] [date<Date>]" - add birthday to user. date format: "YYYY.MM.DD"
   9. "~$/show_birthday [name<str>]" - show birthday by name
   10."~$/birthdays" - show all upcoming birthdays
-""" 
+  11."~$/add_address" - added new address to contacts Example->->-> "Country: Ukraine, City: Kiyv, Street: Hreschatyk, House Number: 45, Apartment Number: 1"
+"""                                         # A-1  Додана команда додавання ареси у список команд
+
   print(help_str)
 
 def hello():
@@ -103,6 +105,15 @@ def birthdays():
   for item in result:
     print(f"{item["name"]}: {item["congratulation_date"]}\n")
 
+@add_address_validation                 # A-1  Додано додавання адреси 
+def add_address(payload):
+    address = payload[0]
+    if is_address(address):    
+        print("Address added successfully!")
+    else:
+        print("Invalid address format!")
+
+
 commands = {
   "help": {
     "handler": help_app,
@@ -136,5 +147,8 @@ commands = {
   },
   "birthdays": {
     "handler": birthdays
-  }
+  },
+  "add_address": {
+    "handler": add_address                      # A-1  Додано додавання адреси 
+  },
 }

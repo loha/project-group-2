@@ -92,3 +92,18 @@ def show_birthday_validation(func):
       print("Give me valid id(UUID) and date(YYYY.MM.DD) please.")
 
   return inner
+
+def add_address_validation(func):                         # A-1 Доданий деоратор
+  def inner(*args, **kwargs):
+    try:
+      payload = args[0]
+
+      if not is_address(payload[0]):
+        raise ValueError
+
+      return func(*args, **kwargs)
+    except ValueError:
+      print("Give me a valid address.Example->->-> Country: Ukraine, City: Kiyv, Street: Hreschatyk, House Number: 45, Apartment Number: 1")
+
+  return inner
+
