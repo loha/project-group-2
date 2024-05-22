@@ -23,3 +23,8 @@ def is_tag(value):
 
 def is_email(value:str):
    return bool(re.match(r"\w+@\w+\.\w+", value))
+
+def is_address(value):
+  # Патерн для перевірки адреси, яка містить країну, місто, вулицю, номер будинку та номер квартири (опційно)
+  pattern = r"Country: [A-Za-z]+, City: [A-Za-z]+, Street: [A-Za-z0-9\s]+, House Number: \d+, Apartment Number: \d*"
+  return bool(re.match(pattern, value))
