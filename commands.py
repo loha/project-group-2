@@ -1,23 +1,31 @@
 import sys
 
-from decorators import body_parser, add_user_validation, edit_user_by_id_validation, get_phone_validation, add_birthday_validation, show_birthday_validation, add_car_number_validation, uuid_validation, add_note_validation, update_note_validation, show_notes_by_tag_validation, search_notes_validation
-from storage import add_user_to_store, find_all_users_from_store, update_user_by_id, get_user_phone_by_name, add_birthday_to_user, get_birthday_by_name, get_birthdays, add_car_number_to_user, delete_user_by_id, add_new_note, find_all_notes, find_all_tags, update_note_by_id, get_notes_by_tag, find_note_by_id, search_notes_by_substring, delete_note_by_id
+from decorators import body_parser, add_user_validation, edit_user_by_id_validation,\
+  phone_validation, add_birthday_validation, show_birthday_validation,\
+    add_car_number_validation, delete_users_validation, name_validation, add_email_validation,\
+    uuid_validation, add_note_validation, update_note_validation, show_notes_by_tag_validation,\
+    search_notes_validation
+from storage import add_user_to_store, find_all_users_from_store, update_user_by_id,\
+  get_user_phone_by_name, add_birthday_to_user, get_birthday_by_name, get_birthdays,\
+    add_car_number_to_user, delete_user_by_id,  get_contact_by_name, get_contact_by_phone, add_email_to_user,\
+    add_new_note, find_all_notes, find_all_tags, update_note_by_id, get_notes_by_tag, find_note_by_id,\
+    search_notes_by_substring, delete_note_by_id
 from helper import args_to_string_parser
 
 @body_parser
 def run(cmd: str, payload):
-  # try:
+  try:
     if len(payload) > 0:
       handler = commands[cmd].get("handler")
       handler(payload)
     else:
       handler = commands[cmd].get("handler")
       handler()
-  # except:
-    # if cmd == "exit" or cmd == "close":
-      # sys.exit(0)
-    # else:
-      # print("\nCommand not found!\n")
+  except:
+    if cmd == "exit" or cmd == "close":
+      sys.exit(0)
+    else:
+      print("\nCommand not found!\n")
 
 def help_app():
   help_str =f"""
@@ -34,6 +42,9 @@ List address book commands:
   10."~$/birthdays" - show all upcoming birthdays
   11."~$/delete [id<UUID>]
   12."~$/add_car_number [id<UUID>] [number<str>]" - add user's car license plate number ex: AA 1234 BB
+  13."~$/find_contact_by_name [name<str>]" - find contact by name
+  14."~$/find_contact_by_phone [phone<str>]" - find contact by phone
+  15."~$/add_email [id<UUID>] [adress<str>]" - add email to user. email format: "xxx@xx.xx"
 
 Notes commands:
   1. "~$/add_note [note<str>]" - add note. [note<str>] = "note text #tag1 #tag2"
@@ -80,7 +91,7 @@ def edit_user_by_id(payload):
   else:
     print("\nUser not found!\n")
 
-@get_phone_validation
+@phone_validation
 def get_phone(payload):
   name = payload[0]
   phone = get_user_phone_by_name(name)  
@@ -98,7 +109,17 @@ def add_birthday(payload):
     print(f"\nBirthday successfuly added\n")
   else:
     print(f"\nError: birthday is not added\n")
-    
+
+@ add_email_validation
+def add_email(payload):
+  id = payload[0]
+  email = payload[1]
+  result = add_email_to_user(id, email)
+  if result:
+    print(f"\nEmail successfuly added\n")
+  else:
+    print(f"\nError: Email is not added\n")
+
 @show_birthday_validation
 def show_birthday(payload):
   name = payload[0]
@@ -132,6 +153,18 @@ def add_car_number(payload):
     print(f"\nCar number successfuly added\n")
   else:
     print(f"\nError: car number is not added\n")
+
+
+@name_validation
+def find_contact_by_name(payload):
+ name: str = payload[0]
+ print(get_contact_by_name(name))
+
+
+@phone_validation
+def find_contact_by_phone(payload):
+  phone: str = payload[0]
+  print(get_contact_by_phone(phone))
 
 
 #########################
@@ -264,6 +297,15 @@ commands = {
   },
   "add_car_number": {
     "handler": add_car_number
+  },
+    "find_contact_by_name": {
+    "handler": find_contact_by_name
+  },
+    "find_contact_by_phone": {
+    "handler": find_contact_by_phone
+  },
+    "add_email": {
+    "handler": add_email
   },
 
   #########################
