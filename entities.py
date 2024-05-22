@@ -78,7 +78,7 @@ class AddressBook:
 
     return record
   
-  def update_record_by_id(self, id, new_name, new_phone):
+  def update_record_by_id(self, id, new_name, new_phone, new_birthday):
     record = self.get_record_by_id(id)
 
     if record:
@@ -90,6 +90,9 @@ class AddressBook:
 
         if field_name == "Phone":
           field.set_value(new_phone)
+
+        if field_name == "Birthday" and new_birthday is not None:
+          field.set_value(new_birthday)
 
       return True
     else:

@@ -41,10 +41,14 @@ def edit_user_by_id_validation(func):
       
       if not is_phone(payload[2]):
         raise ValueError
+      
+      if len(payload) > 3 and not is_date(payload[3]):
+        raise ValueError
 
       return func(*args, **kwargs)
     except ValueError:
-      print("Give me valid user id(should be UUID) and new name(only chars) and phone(start with +380) please.")
+      print("Give me valid user id(should be UUID) or name(only chars) or" +
+            " phone(start with +380) or birthday(YYYY.MM.DD) please.")
 
   return inner
 
@@ -93,7 +97,7 @@ def show_birthday_validation(func):
 
   return inner
 
-def delete_user(func):
+def delete_users_validation(func):
   def inner(*args, **kwargs):
     try:
       payload = args[0]
