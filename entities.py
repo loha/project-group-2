@@ -83,7 +83,7 @@ class AddressBook:
 
     return record
   
-  def update_record_by_id(self, id, new_name, new_phone):
+  def update_record_by_id(self, id, new_name, new_phone, new_birthday):
     record = self.get_record_by_id(id)
 
     if record:
@@ -95,6 +95,9 @@ class AddressBook:
 
         if field_name == "Phone":
           field.set_value(new_phone)
+
+        if field_name == "Birthday" and new_birthday is not None:
+          field.set_value(new_birthday)
 
       return True
     else:
@@ -147,7 +150,7 @@ class AddressBook:
         })
 
     return result_records
-  
+
   def add_car_number_by_id(self, id, car_number):
     record = self.get_record_by_id(id)
     has_car_number = False
@@ -155,7 +158,7 @@ class AddressBook:
 
     if not record:
       return result
-    
+
     for field in record.fields:
         field_name = field.get_field_name()
         if field_name == "CarNumber":
@@ -166,4 +169,12 @@ class AddressBook:
       result = True
 
     return result
-  
+
+  def delete_record_by_id(self, id):
+    message = 'Record not found'
+    for index, record in enumerate(self.records):
+        for field in record.fields:
+          if field.get_field_name() == "ID" and field.get_field_value() == id:
+            del self.records[index]
+            message = 'Record deleted'
+    return message

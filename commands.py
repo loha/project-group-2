@@ -1,7 +1,7 @@
 import sys
 
-from decorators import body_parser, add_user_validation, edit_user_by_id_validation, get_phone_validation, add_birthday_validation, show_birthday_validation, add_car_number_validation
-from storage import add_user_to_store, find_all_users_from_store, update_user_by_id, get_user_phone_by_name, add_birthday_to_user, get_birthday_by_name, get_birthdays, add_car_number_to_user
+from decorators import body_parser, add_user_validation, edit_user_by_id_validation, get_phone_validation, add_birthday_validation, show_birthday_validation, add_car_number_validation, delete_users_validation
+from storage import add_user_to_store, find_all_users_from_store, update_user_by_id, get_user_phone_by_name, add_birthday_to_user, get_birthday_by_name, get_birthdays, add_car_number_to_user, delete_user_by_id
 
 @body_parser
 def run(cmd: str, payload):
@@ -31,8 +31,9 @@ List app commands:
   8. "~$/add_birthday [id<UUID>] [date<Date>]" - add birthday to user. date format: "YYYY.MM.DD"
   9. "~$/show_birthday [name<str>]" - show birthday by name
   10."~$/birthdays" - show all upcoming birthdays
-  11."~$/add_car_number [id<UUID>] [number<str>]" - add user's car license plate number ex: AA 1234 BB
-""" 
+  11."~$/delete [id<UUID>]
+  12."~$/add_car_number [id<UUID>] [number<str>]" - add user's car license plate number ex: AA 1234 BB
+"""
   print(help_str)
 
 def hello():
@@ -61,7 +62,8 @@ def edit_user_by_id(payload):
   id = payload[0]
   new_name = payload[1]
   new_phone = payload[2]
-  result = update_user_by_id(id, new_name, new_phone)
+  new_birthday = payload[3] if len(payload) > 3 else None
+  result = update_user_by_id(id, new_name, new_phone, new_birthday)
 
   if result:
     print("\nUser data updated!\n")
@@ -104,6 +106,12 @@ def birthdays():
   for item in result:
     print(f"{item["name"]}: {item["congratulation_date"]}\n")
 
+@delete_users_validation
+def delete_user(payload):
+   id = payload[0]
+   message = delete_user_by_id(id)
+   print(f"{message}")
+
 @add_car_number_validation
 def add_car_number(payload):
   id = payload[0]
@@ -114,6 +122,7 @@ def add_car_number(payload):
     print(f"\Car number successfuly added\n")
   else:
     print(f"\nError: car number is not added\n")
+
 
 commands = {
   "help": {
@@ -148,6 +157,9 @@ commands = {
   },
   "birthdays": {
     "handler": birthdays
+  },
+  "delete": {
+    "handler": delete_user
   },
   "add_car_number": {
     "handler": add_car_number

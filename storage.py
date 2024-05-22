@@ -14,8 +14,8 @@ def add_user_to_store(name, phone):
 def find_all_users_from_store():
   return address_book.get_records()
 
-def update_user_by_id(id, new_name, new_phone):
-  result = address_book.update_record_by_id(id, new_name, new_phone)
+def update_user_by_id(id, new_name, new_phone, new_birthday):
+  result = address_book.update_record_by_id(id, new_name, new_phone, new_birthday)
   serialize()
   return result
 
@@ -40,6 +40,11 @@ def add_car_number_to_user(id, number):
   result = address_book.add_car_number_by_id(id, car_number)
   serialize()
   return result
+
+def delete_user_by_id(id):
+  message = address_book.delete_record_by_id(id)
+  serialize()
+  return message
 
 def serialize():
   current_dir = str(Path(__file__).with_name("data.pickle"))
