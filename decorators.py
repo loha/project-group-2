@@ -1,4 +1,4 @@
-from validations import is_only_chars, is_phone, is_uuid, is_date
+from validations import is_only_chars, is_phone, is_uuid, is_date, is_address
 
 def body_parser(func):
   def inner(*args):
@@ -93,7 +93,7 @@ def show_birthday_validation(func):
 
   return inner
 
-def add_address_validation(func):                         # A-1 Доданий деоратор
+def add_address_validation(func):                         # A-1 Доданий декоратор
   def inner(*args, **kwargs):
     try:
       payload = args[0]

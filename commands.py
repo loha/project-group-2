@@ -105,11 +105,12 @@ def birthdays():
   for item in result:
     print(f"{item["name"]}: {item["congratulation_date"]}\n")
 
-@add_address_validation                 # A-1  Додано додавання адреси 
-def add_address(payload):
-    address = payload[0]
-    if is_address(address):    
-        print("Address added successfully!")
+@add_address_validation                 # A-1  Додано додавання адреси, виправлено на is_address на add_addresss, додані параметри id та address
+def add_address(payload):  
+    id = payload[0]
+    address = payload[1]
+    if add_address(id, address):  
+        print("Address added successfully!")  
     else:
         print("Invalid address format!")
 

@@ -64,6 +64,18 @@ class Record:
     
     return res
 
+class Address(Field):                                        # Створено новий клас по додаванню Адресів, переміщений вище AddressBook .
+    def __init__(self, country=None, city=None, street=None, house_number=None, apartment_number=None):
+        super().__init__()
+        self.set_field_name("Address")
+        self.set_value({
+            "Country": country,
+            "City": city,
+            "Street": street,
+            "House Number": house_number,
+            "Apartment Number": apartment_number
+        })
+
 class AddressBook:
   def __init__(self) -> None:
     self.records = []
@@ -142,62 +154,3 @@ class AddressBook:
         })
 
     return result_records
-
-def get_upcoming_birthdays(self):              # ПОЧАТОК КОДУ ДЛЯ ОБРОБКИ НАБЛИЖЕНИХ ДНІВ НАРОДЖЕННЯ
-        result_records = []                           # Це додасть перевірку if birthday_value:, щоб уникнути помилки AttributeError, яка є присутня.
-        today = datetime.date.today()
-        year = today.year
-
-        for record in self.records:
-            birthday_value = record.get_field_value_by_name('Birthday')
-            if birthday_value:
-                splited_birthday = birthday_value.split(".")
-                next_birthday = datetime.date(year, int(splited_birthday[1]), int(splited_birthday[2]))
-
-                if is_in_next_7_days(next_birthday, today):
-                    result_records.append({
-                        "name": record.get_field_value_by_name("Name"),
-                        "congratulation_date": next_birthday.strftime("%Y.%m.%d")
-                    })
-
-        return result_records                      # КІНЕЦЬ КОДУ ДЛЯ ОБРОБКИ НАБЛИЖЕНИХ ДНІВ НАРОДЖЕННЯ
-
-class Address(Field):                                        # Створено новий клас по додаванню Аресів.
-    def __init__(self, country=None, city=None, street=None, house_number=None, apartment_number=None):
-        super().__init__()
-        self.set_field_name("Address")
-        self.set_value({
-            "Country": country,
-            "City": city,
-            "Street": street,
-            "House Number": house_number,
-            "Apartment Number": apartment_number
-        })
-
-                                                      # Усі наступні записи зроблені виключно для перевірки Самого себе
-
-address_book = AddressBook()   
-
-record1 = address_book.add_record(Name("John Doe"), Phone("123-456-7890"), Address(country="USA", city="New York", street="Broadway", house_number="123"))
-record2 = address_book.add_record(Name("Jane Smith"), Phone("987-654-3210"), Address(country="Canada", city="Toronto", street="King Street", house_number="456"))
-
-print(address_book.get_records())
-print(address_book.get_upcoming_birthdays())
-
-# Створюємо деякі адреси
-address1 = Address(country="USA", city="New York", street="Broadway", house_number="123")
-address2 = Address(country="Canada", city="Toronto", street="King Street", house_number="456")
-
-# Додаємо записи з адресами в AddressBook
-address_book.add_record(Name("John Doe"), Phone("123-456-7890"), address1)
-address_book.add_record(Name("Jane Smith"), Phone("987-654-3210"), address2)
-
-# Викликаємо метод get_records(), щоб перевірити, чи правильно повертається інформація про записи
-print(address_book.get_records())
-
-# Викликаємо метод get_upcoming_birthdays(), щоб перевірити, чи правильно визначаються наближені дні народження
-print(address_book.get_upcoming_birthdays())
-
-# Спробуємо оновити запис та перевіримо, чи він оновлюється правильно
-address_book.update_record_by_id(record1.get_field_value_by_name("ID"), "John Doe Jr.", "555-555-5555")
-print(address_book.get_records())
