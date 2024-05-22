@@ -2,10 +2,10 @@ import sys
 
 from decorators import body_parser, add_user_validation, edit_user_by_id_validation,\
   phone_validation, add_birthday_validation, show_birthday_validation,\
-    add_car_number_validation, delete_users_validation, name_validation
+    add_car_number_validation, delete_users_validation, name_validation, add_email_validation
 from storage import add_user_to_store, find_all_users_from_store, update_user_by_id,\
   get_user_phone_by_name, add_birthday_to_user, get_birthday_by_name, get_birthdays,\
-    add_car_number_to_user, delete_user_by_id,  get_contact_by_name, get_contact_by_phone
+    add_car_number_to_user, delete_user_by_id,  get_contact_by_name, get_contact_by_phone, add_email_to_user
 
 @body_parser
 def run(cmd: str, payload):
@@ -39,6 +39,7 @@ List app commands:
   12."~$/add_car_number [id<UUID>] [number<str>]" - add user's car license plate number ex: AA 1234 BB
   13."~$/find_contact_by_name [name<str>]" - find contact by name
   14."~$/find_contact_by_phone [phone<str>]" - find contact by phone
+  15."~$/add_email [id<UUID>] [adress<str>]" - add email to user. email format: "xxx@xx.xx"
 """
   print(help_str)
 
@@ -94,6 +95,16 @@ def add_birthday(payload):
     print(f"\nBirthday successfuly added\n")
   else:
     print(f"\nError: birthday is not added\n")
+
+@ add_email_validation
+def add_email(payload):
+  id = payload[0]
+  email = payload[1]
+  result = add_email_to_user(id, email)
+  if result:
+    print(f"\nEmail successfuly added\n")
+  else:
+    print(f"\nError: Email is not added\n")
     
 @show_birthday_validation
 def show_birthday(payload):
@@ -187,5 +198,8 @@ commands = {
   },
     "find_contact_by_phone": {
     "handler": find_contact_by_phone
+  },
+    "add_email": {
+    "handler": add_email
   }
 }

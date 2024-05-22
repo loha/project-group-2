@@ -18,3 +18,6 @@ def is_date(value):
 def is_car_number(value):
   pattern = r'^[A-Z]{2}\d{4}[A-Z]{2}$'
   return bool(re.match(pattern, value))
+
+def is_email(value:str):
+   return bool(re.match(r"\w+@\w+\.\w+", value))

@@ -1,4 +1,4 @@
-from validations import is_only_chars, is_phone, is_uuid, is_date, is_car_number
+from validations import is_only_chars, is_phone, is_uuid, is_date, is_car_number, is_email
 
 def body_parser(func):
   def inner(*args):
@@ -129,5 +129,22 @@ def add_car_number_validation(func):
       return func(*args, **kwargs)
     except ValueError:
       print("Give me valid id(UUID) and car_number(XX 1234 XX) please.")
+
+  return inner
+
+def add_email_validation(func):
+  def inner(*args, **kwargs):
+    try:
+      payload = args[0]
+
+      if not is_uuid(payload[0]):
+        raise ValueError
+
+      if not is_email(payload[1]):
+        raise ValueError
+
+      return func(*args, **kwargs)
+    except ValueError:
+      print("Give me correct email(xxx@xx.xx) please.")
 
   return inner
