@@ -76,6 +76,18 @@ class Record:
     
     return res
 
+class Address(Field):                                        # Створено новий клас по додаванню Адресів, переміщений вище AddressBook .
+    def __init__(self, country=None, city=None, street=None, house_number=None, apartment_number=None):
+        super().__init__()
+        self.set_field_name("Address")
+        self.set_value({
+            "Country": country,
+            "City": city,
+            "Street": street,
+            "House Number": house_number,
+            "Apartment Number": apartment_number
+        })
+
 class AddressBook:
   def __init__(self) -> None:
     self.records = []
@@ -133,6 +145,16 @@ class AddressBook:
 
     if not record:
       return False
+
+    record.add_field(field)
+
+    return True
+
+  def add_address_by_id(self, id, field: Address):
+    record = self.get_record_by_id(id)
+
+    if not record:
+      return False
     
     record.add_field(field)
 
@@ -143,7 +165,7 @@ class AddressBook:
 
     if not record:
       return False
-    
+
     record.add_field(field)
 
     return True

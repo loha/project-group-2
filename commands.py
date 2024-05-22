@@ -4,12 +4,12 @@ from decorators import body_parser, add_user_validation, edit_user_by_id_validat
   phone_validation, add_birthday_validation, show_birthday_validation,\
     add_car_number_validation, delete_users_validation, name_validation, add_email_validation,\
     uuid_validation, add_note_validation, update_note_validation, show_notes_by_tag_validation,\
-    search_notes_validation
+    search_notes_validation, add_address_validation
 from storage import add_user_to_store, find_all_users_from_store, update_user_by_id,\
   get_user_phone_by_name, add_birthday_to_user, get_birthday_by_name, get_birthdays,\
     add_car_number_to_user, delete_user_by_id,  get_contact_by_name, get_contact_by_phone, add_email_to_user,\
     add_new_note, find_all_notes, find_all_tags, update_note_by_id, get_notes_by_tag, find_note_by_id,\
-    search_notes_by_substring, delete_note_by_id
+    search_notes_by_substring, delete_note_by_id, add_address_by_id
 from helper import args_to_string_parser
 
 @body_parser
@@ -45,6 +45,7 @@ List address book commands:
   13."~$/find_contact_by_name [name<str>]" - find contact by name
   14."~$/find_contact_by_phone [phone<str>]" - find contact by phone
   15."~$/add_email [id<UUID>] [adress<str>]" - add email to user. email format: "xxx@xx.xx"
+  16."~$/add_address [id<UUID>] [address<Date>]" - added new address to contacts Example->->-> "Country: Ukraine, City: Kiyv, Street: Hreschatyk, House Number: 45, Apartment Number: 1"
 
 Notes commands:
   1. "~$/add_note [note<str>]" - add note. [note<str>] = "note text #tag1 #tag2"
@@ -165,6 +166,15 @@ def find_contact_by_name(payload):
 def find_contact_by_phone(payload):
   phone: str = payload[0]
   print(get_contact_by_phone(phone))
+
+@add_address_validation                 # A-1  Додано додавання адреси, виправлено на is_address на add_addresss, додані параметри id та address
+def add_address(payload):
+    id = payload[0]
+    address = payload[1]
+    if add_address_by_id(id, address):
+        print("Address added successfully!")
+    else:
+        print("Invalid address format!")
 
 
 #########################
@@ -291,6 +301,10 @@ commands = {
   },
   "birthdays": {
     "handler": birthdays
+  },
+  "add_address": {
+    "handler": add_address                      # A-1  Додано додавання адреси
+  },
   },
   "delete": {
     "handler": delete_user

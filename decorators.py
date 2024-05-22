@@ -1,4 +1,4 @@
-from validations import is_only_chars, is_phone, is_uuid, is_date, is_car_number, is_tag, is_email
+from validations import is_only_chars, is_phone, is_uuid, is_date, is_car_number, is_tag, is_email, is_address
 
 def body_parser(func):
   def inner(*args):
@@ -98,6 +98,23 @@ def show_birthday_validation(func):
       return func(*args, **kwargs)
     except ValueError:
       print("Give me valid id(UUID) and date(YYYY.MM.DD) please.")
+
+  return inner
+
+def add_address_validation(func):                         # A-1 Доданий декоратор
+  def inner(*args, **kwargs):
+    try:
+      payload = args[0]
+
+      if not is_uuid(payload[0]):
+        raise ValueError
+
+      if not is_address(payload[1]):
+        raise ValueError
+
+      return func(*args, **kwargs)
+    except ValueError:
+      print("Give me a valid address.Example->->-> Country: Ukraine, City: Kiyv, Street: Hreschatyk, House Number: 45, Apartment Number: 1")
 
   return inner
 

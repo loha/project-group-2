@@ -1,7 +1,7 @@
 import pickle
 from pathlib import Path
 from uuid import uuid4
-from entities import AddressBook, Name, Phone, Id, Birthday, CarNumber, Record, Email
+from entities import AddressBook, Name, Phone, Id, Birthday, CarNumber, Record, Email, Address
 from note import NoteBook
 
 _NAME_FIELD_KEY = "Name"
@@ -39,6 +39,12 @@ def get_birthday_by_name(name):
 
 def get_birthdays():
   return address_book.get_upcoming_birthdays()
+
+def add_address_by_id(id, address):
+  address = Address(address)
+  result = address_book.add_address_by_id(id, address)
+  serialize_address_book()
+  return result
 
 def add_email_to_user(id, email):
   email=Email(email)
@@ -131,9 +137,9 @@ def deserialize_note_book():
     current_dir = str(Path(__file__).with_name("note_book.pickle"))
     with open(current_dir, 'rb') as f:
       note_book = pickle.load(f)
-      set_note_book(note_book);
+      set_note_book(note_book)
   except FileNotFoundError:
-    pass;
+    pass
     # print("Save file not found")
 
 note_book = NoteBook()
