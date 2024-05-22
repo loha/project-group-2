@@ -43,6 +43,11 @@ class Birthday(Field):
     self.set_field_name("Birthday")
     self.set_value(value)
 
+class CarNumber(Field):
+  def __init__(self, value):
+    self.set_field_name("CarNumber")
+    self.set_value(value)
+
 class Record:
   def __init__(self) -> None:
     self.fields = []
@@ -145,7 +150,26 @@ class AddressBook:
         })
 
     return result_records
-  
+
+  def add_car_number_by_id(self, id, car_number):
+    record = self.get_record_by_id(id)
+    has_car_number = False
+    result = False
+
+    if not record:
+      return result
+
+    for field in record.fields:
+        field_name = field.get_field_name()
+        if field_name == "CarNumber":
+          has_car_number = True
+
+    if not has_car_number:
+      record.add_field(car_number)
+      result = True
+
+    return result
+
   def delete_record_by_id(self, id):
     message = 'Record not found'
     for index, record in enumerate(self.records):

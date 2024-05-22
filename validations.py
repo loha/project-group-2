@@ -14,3 +14,7 @@ def is_uuid(uuid_string):
 def is_date(value):
     match = re.search(r"^\d{4}\.\d{2}.\d{2}$", value)
     return bool(match)
+
+def is_car_number(value):
+  pattern = r'^[A-Z]{2}\d{4}[A-Z]{2}$'
+  return bool(re.match(pattern, value))

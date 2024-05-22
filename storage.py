@@ -1,6 +1,6 @@
 import pickle
 from pathlib import Path
-from entities import AddressBook, Name, Phone, Id, Birthday
+from entities import AddressBook, Name, Phone, Id, Birthday, CarNumber
 
 def add_user_to_store(name, phone):
   id_record = Id()
@@ -34,6 +34,12 @@ def get_birthday_by_name(name):
 
 def get_birthdays():
   return address_book.get_upcoming_birthdays()
+
+def add_car_number_to_user(id, number):
+  car_number = CarNumber(number)
+  result = address_book.add_car_number_by_id(id, car_number)
+  serialize()
+  return result
 
 def delete_user_by_id(id):
   message = address_book.delete_record_by_id(id)
