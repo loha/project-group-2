@@ -1,6 +1,6 @@
 import sys
 
-from decorators import body_parser, add_user_validation, edit_user_by_id_validation, get_phone_validation, add_birthday_validation, show_birthday_validation, email_validation
+from decorators import body_parser, add_user_validation, edit_user_by_id_validation, get_phone_validation, add_birthday_validation, show_birthday_validation, add_email_validation
 from storage import add_user_to_store, find_all_users_from_store, update_user_by_id, get_user_phone_by_name, add_birthday_to_user, get_birthday_by_name, get_birthdays, add_email_to_user
 
 @body_parser
@@ -87,7 +87,7 @@ def add_birthday(payload):
   else:
     print(f"\nError: birthday is not added\n")
 
-@ email_validation
+@ add_email_validation
 def add_email(payload):
   id = payload[0]
   email = payload[1]

@@ -94,7 +94,7 @@ def show_birthday_validation(func):
   return inner
 
 
-def email_validation(func):
+def add_email_validation(func):
   def inner(*args, **kwargs):
     try:
       payload = args[0]
