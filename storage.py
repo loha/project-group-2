@@ -1,6 +1,6 @@
 import pickle
 from pathlib import Path
-from entities import AddressBook, Name, Phone, Id, Birthday
+from entities import AddressBook, Name, Phone, Id, Birthday, Address
 
 def add_user_to_store(name, phone):
   id_record = Id()
@@ -34,6 +34,12 @@ def get_birthday_by_name(name):
 
 def get_birthdays():
   return address_book.get_upcoming_birthdays()
+
+def add_address_by_id(id, address):
+  address = Address(address)
+  result = address_book.add_address_by_id(id, address)
+  serialize()
+  return result
 
 def serialize():
   current_dir = str(Path(__file__).with_name("data.pickle"))

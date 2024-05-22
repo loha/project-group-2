@@ -98,7 +98,10 @@ def add_address_validation(func):                         # A-1 Доданий �
     try:
       payload = args[0]
 
-      if not is_address(payload[0]):
+      if not is_uuid(payload[0]):
+        raise ValueError
+
+      if not is_address(payload[1]):
         raise ValueError
 
       return func(*args, **kwargs)

@@ -135,6 +135,16 @@ class AddressBook:
 
     return True
   
+  def add_address_by_id(self, id, field: Address):
+    record = self.get_record_by_id(id)
+
+    if not record:
+      return False
+    
+    record.add_field(field)
+
+    return True
+  
   def get_records(self):
     return list(map(lambda record: str(record).strip(), self.records))
   
