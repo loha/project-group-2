@@ -52,18 +52,22 @@ def edit_user_by_id_validation(func):
 
   return inner
 
-def get_phone_validation(func):
-  def inner(*args, **kwargs):
-    try:
-      payload = args[0]
 
+def name_validation(func):
+  def inner(payload):
       if not is_only_chars(payload[0]):
-        raise ValueError
+        print("Give me a valid name (has only chars)")
 
-      return func(*args, **kwargs)
-    except ValueError:
-      print("Give me valid  name(only chars).")
+      return func(payload)
+  return inner
 
+
+def phone_validation(func):
+  def inner(payload):
+      if not is_phone(payload[0]):
+        print("Give me a valid phone (has format +380XXXXXXXXX)")
+
+      return func(payload)
   return inner
 
 def add_birthday_validation(func):
