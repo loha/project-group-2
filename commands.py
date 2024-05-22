@@ -1,22 +1,23 @@
 import sys
 
-from decorators import body_parser, add_user_validation, edit_user_by_id_validation, get_phone_validation, add_birthday_validation, show_birthday_validation, add_car_number_validation, delete_users_validation
+from decorators import body_parser, add_user_validation, edit_user_by_id_validation, get_phone_validation, add_birthday_validation, show_birthday_validation, add_car_number_validation, delete_users_validation, add_note_validation
 from storage import add_user_to_store, find_all_users_from_store, update_user_by_id, get_user_phone_by_name, add_birthday_to_user, get_birthday_by_name, get_birthdays, add_car_number_to_user, delete_user_by_id
+from helper import args_to_string_parser
 
 @body_parser
 def run(cmd: str, payload):
-  try:
+  # try:
     if len(payload) > 0:
       handler = commands[cmd].get("handler")
       handler(payload)
     else:
       handler = commands[cmd].get("handler")
       handler()
-  except:
-    if cmd == "exit" or cmd == "close":
-      sys.exit(0)
-    else:
-      print("\nCommand not found!\n")
+  # except:
+    # if cmd == "exit" or cmd == "close":
+      # sys.exit(0)
+    # else:
+      # print("\nCommand not found!\n")
 
 def help_app():
   help_str =f"""
@@ -119,9 +120,18 @@ def add_car_number(payload):
   result = add_car_number_to_user(id, number)
 
   if result:
-    print(f"\Car number successfuly added\n")
+    print(f"\nCar number successfuly added\n")
   else:
     print(f"\nError: car number is not added\n")
+
+
+#########################
+# Notes commands
+#########################
+
+@add_note_validation
+def add_note(payload):
+  data = args_to_string_parser(payload)
 
 
 commands = {
@@ -163,5 +173,12 @@ commands = {
   },
   "add_car_number": {
     "handler": add_car_number
+  },
+
+  #########################
+  # Notes commands
+  #########################
+  "add_note": {
+    "handler": add_note
   }
 }

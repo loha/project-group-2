@@ -127,3 +127,25 @@ def add_car_number_validation(func):
       print("Give me valid id(UUID) and car_number(XX 1234 XX) please.")
 
   return inner
+
+def add_note_validation(func):
+  def inner(*args, **kwargs):
+    try:
+      payload = args[0]
+
+      first_str = payload[0]
+      last_str = payload[len(payload) -1]
+
+      print(first_str.split('"')[0] == "")
+      splited_last_str = last_str.split('"')
+      print(splited_last_str)
+      print(splited_last_str[len(splited_last_str) - 1] == '')
+
+      # if first_str.split('"')[0] == "" and last_str.split('"')[len(last_str) - 1] == '"':
+        # return func(*args, **kwargs)
+
+      raise ValueError
+    except ValueError:
+      print("Whats wrong with your note!")
+
+  return inner

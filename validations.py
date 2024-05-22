@@ -1,5 +1,4 @@
 import re
-import datetime
 
 def is_only_chars(value: str):
   return bool(re.match(r"[A-z]+", value));
