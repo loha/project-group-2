@@ -1,4 +1,4 @@
-from validations import is_only_chars, is_phone, is_uuid, is_date
+from validations import is_only_chars, is_phone, is_uuid, is_date, is_car_number
 
 def body_parser(func):
   def inner(*args):
@@ -90,5 +90,22 @@ def show_birthday_validation(func):
       return func(*args, **kwargs)
     except ValueError:
       print("Give me valid id(UUID) and date(YYYY.MM.DD) please.")
+
+  return inner
+
+def add_car_number_validation(func):
+  def inner(*args, **kwargs):
+    try:
+      payload = args[0]
+
+      if not is_uuid(payload[0]):
+        raise ValueError
+      
+      if not is_car_number(payload[1]):
+        raise ValueError
+
+      return func(*args, **kwargs)
+    except ValueError:
+      print("Give me valid id(UUID) and car_number(XX 1234 XX) please.")
 
   return inner
