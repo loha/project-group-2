@@ -8,5 +8,4 @@ def args_to_string_parser(value):
   for item in value:
     res += item + " "
   
-  print(res.strip());
-  return res.strip()
+  return res.replace('"', "").strip()

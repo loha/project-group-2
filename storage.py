@@ -1,6 +1,8 @@
 import pickle
 from pathlib import Path
-from entities.address_book import AddressBook, Name, Phone, Id, Birthday, CarNumber
+from uuid import uuid4
+from entities import AddressBook, Name, Phone, Id, Birthday, CarNumber
+from note import NoteBook
 
 def add_user_to_store(name, phone):
   id_record = Id()
@@ -58,7 +60,8 @@ def deserialize_address_book():
       address_book = pickle.load(f)
       set_address_book(address_book);
   except FileNotFoundError:
-    print("Save file not found")
+    pass;
+    # print("Save file not found")
 
 address_book = AddressBook()
 
@@ -67,3 +70,61 @@ def set_address_book(ab):
   address_book = ab
 
 deserialize_address_book()
+
+#########################
+# Notes commands
+#########################
+
+def add_new_note(new_note: str):
+  id = str(uuid4())
+  res = note_book.add_note_with_tads_parse(id, new_note)
+  serialize_note_book()
+  return res
+
+def update_note_by_id(id, new_text):
+  res = note_book.update_note_by_id(id, new_text)
+  serialize_note_book()
+  return res
+
+def find_all_notes():
+  return note_book.get_all_notes()
+
+def find_all_tags():
+  return note_book.get_all_tags()
+
+def get_notes_by_tag(tag: str):
+  return note_book.get_notes_by_tag(tag)
+
+def find_note_by_id(id: str):
+  return note_book.get_note_by_id(id)
+
+def search_notes_by_substring(substring: str):
+  return note_book.search_notes_by_substring(substring)
+
+def delete_note_by_id(id: str):
+  res = note_book.delete_note_by_id(id)
+  serialize_note_book()
+  return res
+
+def serialize_note_book():
+  current_dir = str(Path(__file__).with_name("note_book.pickle"))
+  with open(current_dir, 'wb') as f:
+    pickle.dump(note_book, f)
+
+def deserialize_note_book():
+  try:
+    current_dir = str(Path(__file__).with_name("note_book.pickle"))
+    with open(current_dir, 'rb') as f:
+      note_book = pickle.load(f)
+      set_note_book(note_book);
+  except FileNotFoundError:
+    pass;
+    # print("Save file not found")
+
+note_book = NoteBook()
+
+def set_note_book(nb):
+  global note_book
+  note_book = nb
+
+deserialize_note_book()

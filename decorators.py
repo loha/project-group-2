@@ -1,4 +1,4 @@
-from validations import is_only_chars, is_phone, is_uuid, is_date, is_car_number
+from validations import is_only_chars, is_phone, is_uuid, is_date, is_car_number, is_tag
 
 def body_parser(func):
   def inner(*args):
@@ -97,7 +97,7 @@ def show_birthday_validation(func):
 
   return inner
 
-def delete_users_validation(func):
+def uuid_validation(func):
   def inner(*args, **kwargs):
     try:
       payload = args[0]
@@ -135,17 +135,69 @@ def add_note_validation(func):
 
       first_str = payload[0]
       last_str = payload[len(payload) -1]
-
-      print(first_str.split('"')[0] == "")
+      is_exists_first_double_quote = first_str.split('"')[0] == ""
       splited_last_str = last_str.split('"')
-      print(splited_last_str)
-      print(splited_last_str[len(splited_last_str) - 1] == '')
+      is_exists_second_double_quote = splited_last_str[len(splited_last_str) - 1] == ''
 
-      # if first_str.split('"')[0] == "" and last_str.split('"')[len(last_str) - 1] == '"':
-        # return func(*args, **kwargs)
+      if is_exists_first_double_quote and is_exists_second_double_quote:
+        return func(*args, **kwargs)
 
       raise ValueError
     except ValueError:
-      print("Whats wrong with your note!")
+      print("Whats wrong with your note! Please, use double quotes for note text.")
+
+  return inner
+
+def update_note_validation(func):
+  def inner(*args, **kwargs):
+    try:
+      payload = args[0]
+
+      id = payload[0]
+
+      if not is_uuid(id):
+        raise ValueError
+
+      new_text = payload[1:]
+      first_str = new_text[0]
+      last_str = new_text[len(new_text) -1]
+      is_exists_first_double_quote = first_str.split('"')[0] == ""
+      splited_last_str = last_str.split('"')
+      is_exists_second_double_quote = splited_last_str[len(splited_last_str) - 1] == ''
+
+      if is_exists_first_double_quote and is_exists_second_double_quote:
+        return func(*args, **kwargs)
+
+      raise ValueError
+    except ValueError:
+      print("Whats wrong with your note! Please, use double quotes for note text.")
+
+  return inner
+
+def show_notes_by_tag_validation(func):
+  def inner(*args, **kwargs):
+    try:
+      payload = args[0]
+
+      if not is_tag(payload[0]):
+        raise ValueError
+
+      return func(*args, **kwargs)
+    except ValueError:
+      print("Value is not a tag. Please, use #tag_name.")
+
+  return inner
+
+def search_notes_validation(func):
+  def inner(*args, **kwargs):
+    try:
+      payload = args[0]
+
+      # if not is_only_chars(payload[0]):
+      #   raise ValueError
+
+      return func(*args, **kwargs)
+    except ValueError:
+      print("Value is not a tag. Please, use #tag_name.")
 
   return inner

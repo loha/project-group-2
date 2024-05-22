@@ -1,7 +1,7 @@
 import sys
 
-from decorators import body_parser, add_user_validation, edit_user_by_id_validation, get_phone_validation, add_birthday_validation, show_birthday_validation, add_car_number_validation, delete_users_validation, add_note_validation
-from storage import add_user_to_store, find_all_users_from_store, update_user_by_id, get_user_phone_by_name, add_birthday_to_user, get_birthday_by_name, get_birthdays, add_car_number_to_user, delete_user_by_id
+from decorators import body_parser, add_user_validation, edit_user_by_id_validation, get_phone_validation, add_birthday_validation, show_birthday_validation, add_car_number_validation, uuid_validation, add_note_validation, update_note_validation, show_notes_by_tag_validation, search_notes_validation
+from storage import add_user_to_store, find_all_users_from_store, update_user_by_id, get_user_phone_by_name, add_birthday_to_user, get_birthday_by_name, get_birthdays, add_car_number_to_user, delete_user_by_id, add_new_note, find_all_notes, find_all_tags, update_note_by_id, get_notes_by_tag, find_note_by_id, search_notes_by_substring, delete_note_by_id
 from helper import args_to_string_parser
 
 @body_parser
@@ -21,7 +21,7 @@ def run(cmd: str, payload):
 
 def help_app():
   help_str =f"""
-List app commands:
+List address book commands:
   1. "~$/help" - show command list
   2. "~$/exit" or "~$/close" - exit from app
   3. "~$/hello" - print hello message
@@ -34,6 +34,15 @@ List app commands:
   10."~$/birthdays" - show all upcoming birthdays
   11."~$/delete [id<UUID>]
   12."~$/add_car_number [id<UUID>] [number<str>]" - add user's car license plate number ex: AA 1234 BB
+
+Notes commands:
+  1. "~$/add_note [note<str>]" - add note. [note<str>] = "note text #tag1 #tag2"
+  2. "~$/show_all_notes" - show all notes
+  3. "~$/show_all_tags" - show all tags
+  4. "~$/update_note [id<UUID>] [note<str>]" - update note by id
+  5. "~$/show_notes_by_tag [tag<str>]" - show notes by tag
+  6. "~$/show_note [id<UUID>]" - show note by id
+  7. "~$/search_notes [substring<str>]" - search notes by substring
 """
   print(help_str)
 
@@ -107,7 +116,7 @@ def birthdays():
   for item in result:
     print(f"{item["name"]}: {item["congratulation_date"]}\n")
 
-@delete_users_validation
+@uuid_validation
 def delete_user(payload):
    id = payload[0]
    message = delete_user_by_id(id)
@@ -132,6 +141,88 @@ def add_car_number(payload):
 @add_note_validation
 def add_note(payload):
   data = args_to_string_parser(payload)
+  res = add_new_note(data)
+
+  if res["result"]:
+    if len(res["tags"]) > 0:
+      print(f"\nNote with id '{res["note"]["id"]}' added with tags: {res["tags"]}\n")
+    else:
+      print("\nNote added\n")
+
+def show_all_notes():
+  print("\nNotes:")
+  notes = find_all_notes()
+  index = 1
+  for note in notes:
+    print(f"{index}. Id: {note.get_id()}. Note: \"{note.get_text()}\"")
+    index += 1
+  print("\n")
+
+def show_all_tags():
+  print("\nTags:")
+  tags = find_all_tags()
+  for tag in tags:
+    print(f"#{tag}")
+  print("\n")
+
+@update_note_validation
+def update_note(payload):
+  id = payload[0]
+  new_text = args_to_string_parser(payload[1:])
+  res = update_note_by_id(id, new_text)
+
+  if res:
+    print("\nNote updated\n")
+  else:
+    print("\nNote not found\n")
+
+@show_notes_by_tag_validation
+def show_notes_by_tag(payload):
+  tag = payload[0].split("#")[1]
+  notes = get_notes_by_tag(tag)
+
+  if notes and len(notes) > 0:
+    index = 1
+    for note in notes:
+      print(f"{index}. Id: {note.get_id()}. Note: \"{note.get_text()}\"")
+      index += 1
+    print("\n")
+  else:
+    print("\nNotes not found\n")
+
+@uuid_validation
+def show_note(payload):
+  id = payload[0]
+  note = find_note_by_id(id)
+
+  if note:
+    print(f"\nId: {note.get_id()}. Note: \"{note.get_text()}\"\n")
+  else:
+    print("\nNote not found\n")
+
+@search_notes_validation
+def search_notes(payload):
+  substring = payload[0]
+  notes = search_notes_by_substring(substring)
+
+  if notes and len(notes) > 0:
+    index = 1
+    for note in notes:
+      print(f"{index}. Id: {note.get_id()}. Note: \"{note.get_text()}\"")
+      index += 1
+    print("\n")
+  else:
+    print("\nNotes not found\n")
+
+@uuid_validation
+def delete_note(payload):
+  id = payload[0]
+  res = delete_note_by_id(id)
+
+  if res:
+    print("\nNote deleted\n")
+  else:
+    print("\nNote not found\n")
 
 
 commands = {
@@ -180,5 +271,26 @@ commands = {
   #########################
   "add_note": {
     "handler": add_note
+  },
+  "show_all_notes": {
+    "handler": show_all_notes
+  },
+  "show_all_tags": {
+    "handler": show_all_tags
+  },
+  "update_note": {
+    "handler": update_note
+  },
+  "show_notes_by_tag": {
+    "handler": show_notes_by_tag
+  },
+  "show_note": {
+    "handler": show_note
+  },
+  "search_notes": {
+    "handler": search_notes
+  },
+  "delete_note": {
+    "handler": delete_note
   }
 }
