@@ -1,6 +1,9 @@
 import pickle
 from pathlib import Path
-from entities import AddressBook, Name, Phone, Id, Birthday, CarNumber
+from entities import AddressBook, Name, Phone, Id, Birthday, CarNumber, Record
+
+_NAME_FIELD_KEY = "Name"
+_PHONE_FIELD_KEY = "Phone"
 
 def add_user_to_store(name, phone):
   id_record = Id()
@@ -20,7 +23,7 @@ def update_user_by_id(id, new_name, new_phone, new_birthday):
   return result
 
 def get_user_phone_by_name(name):
-  phone = address_book.get_record_by_field("Name", name, "Phone")
+  phone = address_book.get_record_by_field("Name", name, _PHONE_FIELD_KEY)
   return phone
 
 def add_birthday_to_user(id, date):
@@ -30,7 +33,15 @@ def add_birthday_to_user(id, date):
   return result;
 
 def get_birthday_by_name(name):
-  return address_book.get_record_by_field("Name", name, "Birthday")
+  return address_book.get_record_by_field(_NAME_FIELD_KEY, name, "Birthday")
+
+
+def get_contact_by_name(name: str) -> Record:
+  return address_book.get_record_by_field(_NAME_FIELD_KEY, name, None)
+
+
+def get_contact_by_phone(phone: str) -> Record:
+  return address_book.get_record_by_field(_PHONE_FIELD_KEY, phone, None)
 
 def get_birthdays():
   return address_book.get_upcoming_birthdays()
