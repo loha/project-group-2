@@ -160,6 +160,20 @@ class AddressBook:
 
     return True
   
+  def edit_address_by_id(self, id, address):
+    record = self.get_record_by_id(id)
+
+    if record:
+      for field in record.fields:
+        field_name = field.get_field_name()
+
+        if field_name == "Address":
+          field.set_value(address)
+
+      return True
+    else:
+      return False
+
   def add_email(self, id, field: Email):
     record = self.get_record_by_id(id)
 

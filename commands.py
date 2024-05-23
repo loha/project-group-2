@@ -9,7 +9,7 @@ from storage import add_user_to_store, find_all_users_from_store, update_user_by
   get_user_phone_by_name, add_birthday_to_user, get_birthday_by_name, get_birthdays,\
     add_car_number_to_user, delete_user_by_id,  get_contact_by_name, get_contact_by_phone, add_email_to_user,\
     add_new_note, find_all_notes, find_all_tags, update_note_by_id, get_notes_by_tag, find_note_by_id,\
-    search_notes_by_substring, delete_note_by_id, add_address_by_id
+    search_notes_by_substring, delete_note_by_id, add_address_by_id, edit_address_by_id
 from helper import args_to_string_parser
 
 @body_parser
@@ -45,7 +45,8 @@ List address book commands:
   13."~$/find_contact_by_name [name<str>]" - find contact by name
   14."~$/find_contact_by_phone [phone<str>]" - find contact by phone
   15."~$/add_email [id<UUID>] [adress<str>]" - add email to user. email format: "xxx@xx.xx"
-  16."~$/add_address [id<UUID>] [address<Date>]" - added new address to contacts Example->->-> "Country: Ukraine, City: Kiyv, Street: Hreschatyk, House Number: 45, Apartment Number: 1"
+  16."~$/add_address [id<UUID>] [country<str>] [city<str>] [street<str>] [building<str>] [appartment<str>] (optional) )" - added new address to contacts. Ex. Ukraine Kyiv Hreschatyk 45 4
+  17."~$/edit_address [id<UUID>] [country<str>] [city<str>] [street<str>] [building<str>] [appartment<str>] (optional) )" - added new address to contacts. Ex. Ukraine Kyiv Hreschatyk 45 4
 
 Notes commands:
   1. "~$/add_note [note<str>]" - add note. [note<str>] = "note text #tag1 #tag2"
@@ -170,12 +171,34 @@ def find_contact_by_phone(payload):
 @add_address_validation                 # A-1  Додано додавання адреси, виправлено на is_address на add_addresss, додані параметри id та address
 def add_address(payload):
     id = payload[0]
-    address = payload[1]
+    address = {
+      "country": payload[1],
+      "city": payload[2],
+      "street": payload[3],
+      "house_number": payload[4],
+      "apartment_number": payload[5] if len(payload) > 5 else None
+    }
+
     if add_address_by_id(id, address):
         print("Address added successfully!")
     else:
         print("Invalid address format!")
 
+@add_address_validation
+def edit_address(payload):
+  id = payload[0]
+  address = {
+    "Country": payload[1],
+    "City": payload[2],
+    "Street": payload[3],
+    "House Number": payload[4],
+    "Apartment Number": payload[5] if len(payload) > 5 else None
+  }
+
+  if edit_address_by_id(id, address):
+      print("Address updated successfully!")
+  else:
+      print("Invalid updated format!")
 
 #########################
 # Notes commands
@@ -304,6 +327,9 @@ commands = {
   },
   "add_address": {
     "handler": add_address                      # A-1  Додано додавання адреси
+  },
+  "edit_address": {
+    "handler": edit_address
   },
   "delete": {
     "handler": delete_user
