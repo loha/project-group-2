@@ -1,4 +1,4 @@
-from validations import is_only_chars, is_phone, is_uuid, is_date, is_car_number, is_tag, is_email, is_address
+from validations import is_only_chars, is_phone, is_uuid, is_date, is_car_number, is_tag, is_email, has_valid_address_chars
 
 def body_parser(func):
   def inner(*args):
@@ -105,16 +105,31 @@ def add_address_validation(func):                         # A-1 Доданий �
   def inner(*args, **kwargs):
     try:
       payload = args[0]
+      id = payload[0]
+      address = {
+        "country": payload[1] if len(payload) > 1 else None,
+        "city": payload[2] if len(payload) > 2 else None,
+        "street": payload[3] if len(payload) > 3 else None,
+        "house_number": payload[4] if len(payload) > 4 else None,
+        "apartment_number": payload[5] if len(payload) > 5 else None
+      }
 
-      if not is_uuid(payload[0]):
-        raise ValueError
+      if not is_uuid(id):
+        raise ValueError('Give me valid UUID')
 
-      if not is_address(payload[1]):
-        raise ValueError
+      for key, value in address.items():
+        if key == "apartment_number" and value is None:
+          continue
+
+        if value is None:
+          raise ValueError(f"{key} is required")
+
+        if not has_valid_address_chars(value):
+          raise ValueError(f"{key} has invalid characters")
 
       return func(*args, **kwargs)
-    except ValueError:
-      print("Give me a valid address.Example->->-> Country: Ukraine, City: Kiyv, Street: Hreschatyk, House Number: 45, Apartment Number: 1")
+    except ValueError as e:
+      print(e)
 
   return inner
 
