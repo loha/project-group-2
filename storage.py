@@ -19,8 +19,8 @@ def add_user_to_store(name, phone):
 def find_all_users_from_store():
   return address_book.get_records()
 
-def update_user_by_id(id, new_name, new_phone, new_birthday):
-  result = address_book.update_record_by_id(id, new_name, new_phone, new_birthday)
+def update_user_by_id(id, new_name, new_phone):
+  result = address_book.update_record_by_id(id, new_name, new_phone)
   serialize_address_book()
   return result
 
@@ -31,6 +31,11 @@ def get_user_phone_by_name(name):
 def add_birthday_to_user(id, date):
   birthday = Birthday(date)
   result = address_book.add_birthday_by_id(id, birthday)
+  serialize_address_book()
+  return result
+
+def update_birthday(id, date):
+  result = address_book.update_birthday(id, date)
   serialize_address_book()
   return result
 
@@ -52,9 +57,19 @@ def add_email_to_user(id, email):
   serialize_address_book()
   return result
 
+def edit_email_by_id(id, email):
+  result = address_book.update_email_by_id(id, email)
+  serialize_address_book()
+  return result
+
 def add_car_number_to_user(id, number):
   car_number = CarNumber(number)
   result = address_book.add_car_number_by_id(id, car_number)
+  serialize_address_book()
+  return result
+
+def update_car_number(id, number):
+  result = address_book.update_car_number(id, number)
   serialize_address_book()
   return result
 
