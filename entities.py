@@ -102,7 +102,7 @@ class AddressBook:
 
     return record
   
-  def update_record_by_id(self, id, new_name, new_phone, new_birthday):
+  def update_record_by_id(self, id, new_name, new_phone):
     record = self.get_record_by_id(id)
 
     if record:
@@ -114,9 +114,6 @@ class AddressBook:
 
         if field_name == "Phone":
           field.set_value(new_phone)
-
-        if field_name == "Birthday" and new_birthday is not None:
-          field.set_value(new_birthday)
 
       return True
     else:
@@ -149,6 +146,20 @@ class AddressBook:
     record.add_field(field)
 
     return True
+
+  def update_birthday(self, id, date):
+    record = self.get_record_by_id(id)
+
+    if record:
+      for field in record.fields:
+        field_name = field.get_field_name()
+
+        if field_name == "Birthday":
+          field.set_value(date)
+
+      return True
+    else:
+      return False
 
   def add_address_by_id(self, id, field: Address):
     record = self.get_record_by_id(id)
@@ -184,8 +195,19 @@ class AddressBook:
 
     return True
 
+  def update_email_by_id(self, id, email):
+    record = self.get_record_by_id(id)
 
+    if record:
+      for field in record.fields:
+        field_name = field.get_field_name()
 
+        if field_name == "Email":
+          field.set_value(email)
+
+      return True
+    else:
+      return False
 
   def get_records(self):
     return list(map(lambda record: str(record).strip(), self.records))
@@ -225,6 +247,20 @@ class AddressBook:
       result = True
 
     return result
+  
+  def update_car_number(self, id, number):
+    record = self.get_record_by_id(id)
+
+    if record:
+      for field in record.fields:
+        field_name = field.get_field_name()
+
+        if field_name == "CarNumber":
+          field.set_value(number)
+
+      return True
+    else:
+      return False
 
   def delete_record_by_id(self, id):
     message = 'Record not found'

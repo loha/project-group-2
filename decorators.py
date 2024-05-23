@@ -160,7 +160,7 @@ def add_car_number_validation(func):
 
       return func(*args, **kwargs)
     except ValueError:
-      print("Give me valid id(UUID) and car_number(XX 1234 XX) please.")
+      print("Give me valid id(UUID) and car_number(XX1234XX) please.")
 
   return inner
 

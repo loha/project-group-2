@@ -9,7 +9,8 @@ from storage import add_user_to_store, find_all_users_from_store, update_user_by
   get_user_phone_by_name, add_birthday_to_user, get_birthday_by_name, get_birthdays,\
     add_car_number_to_user, delete_user_by_id,  get_contact_by_name, get_contact_by_phone, add_email_to_user,\
     add_new_note, find_all_notes, find_all_tags, update_note_by_id, get_notes_by_tag, find_note_by_id,\
-    search_notes_by_substring, delete_note_by_id, add_address_by_id, edit_address_by_id
+    search_notes_by_substring, delete_note_by_id, add_address_by_id, edit_address_by_id,\
+    edit_email_by_id, update_birthday, update_car_number
 from helper import args_to_string_parser
 
 @body_parser
@@ -38,15 +39,18 @@ List address book commands:
   6. "~$/update_user [id<UUID>] [name<str>] [phone<str>]" - update user by id
   7. "~$/get_phone [name<str>]" - get phone by user name
   8. "~$/add_birthday [id<UUID>] [date<Date>]" - add birthday to user. date format: "YYYY.MM.DD"
-  9. "~$/show_birthday [name<str>]" - show birthday by name
-  10."~$/birthdays" - show all upcoming birthdays
-  11."~$/delete [id<UUID>]
-  12."~$/add_car_number [id<UUID>] [number<str>]" - add user's car license plate number ex: AA 1234 BB
-  13."~$/find_contact_by_name [name<str>]" - find contact by name
-  14."~$/find_contact_by_phone [phone<str>]" - find contact by phone
-  15."~$/add_email [id<UUID>] [adress<str>]" - add email to user. email format: "xxx@xx.xx"
-  16."~$/add_address [id<UUID>] [country<str>] [city<str>] [street<str>] [building<str>] [appartment<str>] (optional) )" - added new address to contacts. Ex. Ukraine Kyiv Hreschatyk 45 4
-  17."~$/edit_address [id<UUID>] [country<str>] [city<str>] [street<str>] [building<str>] [appartment<str>] (optional) )" - added new address to contacts. Ex. Ukraine Kyiv Hreschatyk 45 4
+  9. "~$/edit_birthday [id<UUID>] [date<Date>]" - edit birthday. date format: "YYYY.MM.DD"
+  10. "~$/show_birthday [name<str>]" - show birthday by name
+  11."~$/birthdays" - show all upcoming birthdays
+  12."~$/delete [id<UUID>]
+  13."~$/add_car_number [id<UUID>] [number<str>]" - add user's car license plate number ex: AA 1234 BB
+  14."~$/edit_car_number [id<UUID>] [number<str>]" - edit user's car license plate number ex: AA1234BB
+  15."~$/find_contact_by_name [name<str>]" - find contact by name
+  16."~$/find_contact_by_phone [phone<str>]" - find contact by phone
+  17."~$/add_email [id<UUID>] [adress<str>]" - add email to user. email format: "xxx@xx.xx"
+  18."~$/edit_email [id<UUID>] [adress<str>]" - edit email of user. email format: "xxx@xx.xx"
+  19."~$/add_address [id<UUID>] [country<str>] [city<str>] [street<str>] [building<str>] [appartment<str>] (optional) )" - added new address to contacts. Ex. Ukraine Kyiv Hreschatyk 45 4
+  20."~$/edit_address [id<UUID>] [country<str>] [city<str>] [street<str>] [building<str>] [appartment<str>] (optional) )" - added new address to contacts. Ex. Ukraine Kyiv Hreschatyk 45 4
 
 Notes commands:
   1. "~$/add_note [note<str>]" - add note. [note<str>] = "note text #tag1 #tag2"
@@ -112,6 +116,17 @@ def add_birthday(payload):
   else:
     print(f"\nError: birthday is not added\n")
 
+@add_birthday_validation
+def edit_birthday(payload):
+  id = payload[0]
+  date = payload[1]
+  result = update_birthday(id, date)
+
+  if result:
+    print(f"\nBirthday successfuly updated\n")
+  else:
+    print(f"\nError: birthday is not updated\n")
+
 @ add_email_validation
 def add_email(payload):
   id = payload[0]
@@ -121,6 +136,17 @@ def add_email(payload):
     print(f"\nEmail successfuly added\n")
   else:
     print(f"\nError: Email is not added\n")
+
+@add_email_validation
+def edit_email(payload):
+  id = payload[0]
+  email = payload[1]
+  result = edit_email_by_id(id, email)
+  if result:
+    print(f"\nEmail successfuly updated\n")
+  else:
+    print(f"\nError: Email is not updated\n")
+
 
 @show_birthday_validation
 def show_birthday(payload):
@@ -156,6 +182,16 @@ def add_car_number(payload):
   else:
     print(f"\nError: car number is not added\n")
 
+@add_car_number_validation
+def edit_car_number(payload):
+  id = payload[0]
+  number = payload[1]
+  result = update_car_number(id, number)
+
+  if result:
+    print(f"\nCar number successfuly updated\n")
+  else:
+    print(f"\nError: car number is not updated\n")
 
 @name_validation
 def find_contact_by_name(payload):
@@ -319,6 +355,9 @@ commands = {
   "add_birthday": {
     "handler": add_birthday
   },
+  "edit_birthday": {
+    "handler": edit_birthday
+  },
   "show_birthday": {
     "handler": show_birthday
   },
@@ -337,6 +376,9 @@ commands = {
   "add_car_number": {
     "handler": add_car_number
   },
+  "edit_car_number": {
+    "handler": edit_car_number
+  },
     "find_contact_by_name": {
     "handler": find_contact_by_name
   },
@@ -345,6 +387,9 @@ commands = {
   },
     "add_email": {
     "handler": add_email
+  },
+  "edit_email": {
+    "handler": edit_email
   },
 
   #########################
