@@ -41,8 +41,13 @@ def get_birthdays():
   return address_book.get_upcoming_birthdays()
 
 def add_address_by_id(id, address):
-  address = Address(address)
+  address = Address(**address)
   result = address_book.add_address_by_id(id, address)
+  serialize_address_book()
+  return result
+
+def edit_address_by_id(id, address):
+  result = address_book.edit_address_by_id(id, address)
   serialize_address_book()
   return result
 
