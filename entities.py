@@ -1,145 +1,111 @@
+from dataclasses import dataclass
 import datetime
 from uuid import uuid4
 from helper import is_in_next_7_days
 import validations as check
+from typing import List
 
 
 class Field:
-    def __init__(self) -> None:
-        self.field_name = None
-        self.value = None
-
-    def get_field_name(self):
-        return self.field_name
-
-    def get_field_value(self):
-        return self.value
-
-    def set_field_name(self, name):
-        self.field_name = name
-
-    def set_value(self, value):
+    def __init__(self, value: str) -> None:
         self.value = value
 
+    def __eq__(self, other):
+        if isinstance(other, Field):
+            return self.value.lower() == other.value.lower()
+        return False
+
+    def __repr__(self):
+        return self.value
+
+    def __str__(self):
+        return self.value
+
+class Id(Field):
+    def __init__(self, val: str = None) -> None:
+        if val:
+            check.validate_id(val)
+            super().__init__(val)
+        else:
+            super().__init__(str(uuid4()))
 
 class Name(Field):
     def __init__(self, value: str) -> None:
         check.validate_name(value)
-        super().__init__()
-        self.set_field_name("Name")
-        self.set_value(value)
+        super().__init__(value)
 
 
 class Phone(Field):
-    def __init__(self, value: str) -> None:
-        check.validate_phone(value)
-        super().__init__()
-        self.set_field_name("Phone")
-        self.set_value(value)
+    def __init__(self, val: str) -> None:
+        check.validate_phone(val)
+        super().__init__(val)
 
 
 class Email(Field):
-    def __init__(self, value) -> None:
-        super().__init__()
-        self.set_field_name("Email")
-        self.set_value(value)
-
-
-class Id(Field):
-    def __init__(self, value: str = None) -> None:
-        super().__init__()
-        self.set_field_name("ID")
-        if value:
-            check.validate_id(value)
-            self.set_value(value)
-        else:
-            self.set_value(str(uuid4()))
-        
-    def __eq__(self, other):
-        if isinstance(other, Id):
-            return self.value == other.value
-        return False
+    def __init__(self, val: str) -> None:
+        check.validate_email(val)
+        super().__init__(val)
 
 
 class Birthday(Field):
-    def __init__(self, value):
-        super().__init__()
-        self.set_field_name("Birthday")
-        self.set_value(value)
+    def __init__(self, val: str):
+        check.validate_date(val)
+        super().__init__(val)
 
 
-class CarNumber(Field):
-    def __init__(self, value):
-        self.set_field_name("CarNumber")
-        self.set_value(value)
+class Address(Field):
+    def __init__(self, val: str):
+        check.validate_address(val)
+        super().__init__(val)
 
 
+class Plate(Field):
+    def __init__(self, val: str):
+        check.validate_plate(val)
+        super().__init__(val)
+
+
+@dataclass
 class Contact:
-    def __init__(self) -> None:
-        # TODO: replace with plain fields
-        self.fields = []
-
-    def add_field(self, field):
-        self.fields.append(field)
-
-    def get_id(self) -> Id:
-        for field in self.fields:
-            if field.get_field_name() == "ID":
-                return field
-        return None
-
-    def get_field_value_by_name(self, field_name):
-        for field in self.fields:
-            if field.get_field_name() == field_name:
-                return field.get_field_value()
-        return None
+    id: Id
+    name: Name
+    phone: Phone
+    birthday: Birthday = None
+    address: Address = None
+    email: Email = None
+    plate: Plate = None
 
     def __str__(self) -> str:
-        res = ""
-
-        for field in self.fields:
-            res += f"{field.get_field_name()}: {field.get_field_value()}. "
-
-        return res
-
-
-# Створено новий клас по додаванню Адресів, переміщений вище AddressBook .
-class Address(Field):
-    def __init__(
-            self,
-            country=None,
-            city=None,
-            street=None,
-            house_number=None,
-            apartment_number=None):
-        super().__init__()
-        self.set_field_name("Address")
-        self.set_value({
-            "Country": country,
-            "City": city,
-            "Street": street,
-            "House Number": house_number,
-            "Apartment Number": apartment_number
-        })
+        return str(vars(self))
 
 
 class AddressBook:
     def __init__(self) -> None:
-        self.records = []
+        self.records: List[Field] = []
 
-    def add_contact(self, *fields) -> Contact:
-        contact = Contact()
-
-        for field in fields:
-            contact.add_field(field)
-
+    def add_contact(self, id: Id, name: Name, phone: Phone) -> Contact:
+        contact: Contact = Contact(id, name, phone)
         self.records.append(contact)
 
         return contact
-    
+
     def get_contact_by_id(self, id: Id) -> Contact:
         for contact in self.records:
-            if contact.get_id() == id:
+            if contact.id == id:
+                return contact
+
+        return None
+
+    def get_contact_by_name(self, name: Name) -> Contact:
+        for contact in self.records:
+            if contact.name == name:
+                return contact
+
+        return None
+
+    def get_contact_by_phone(self, phone: Phone) -> Contact:
+        for contact in self.records:
+            if contact.phone == phone:
                 return contact
 
         return None
@@ -161,23 +127,17 @@ class AddressBook:
             return True
         else:
             return False
-        
 
-    def update_contact(self, id: Id, new_name: Name, new_phone: Phone) -> Contact:
+    def update_contact(self, id: Id, name: Name, phone: Phone) -> Contact:
         contact: Contact = self.get_contact_by_id(id)
 
         if not contact:
             return None
 
-        for field in contact.fields:
-            field_name = field.get_field_name()
-            if field_name == "Name":
-                field.set_value(new_name.get_field_value())
-            if field_name == "Phone":
-                field.set_value(new_phone.get_field_value())
+        contact.name = name
+        contact.phone = phone
 
         return contact
-
 
     @DeprecationWarning
     def get_record_by_id(self, id):
@@ -187,6 +147,7 @@ class AddressBook:
                     return record
         return None
 
+    @DeprecationWarning
     def get_record_by_field(self, search_field, search_value, returned_field):
         for record in self.records:
             for field in record.fields:
@@ -208,7 +169,8 @@ class AddressBook:
 
         return True
 
-    def update_birthday(self, id, date):
+    @DeprecationWarning
+    def update_birthday_val(self, id, date):
         record = self.get_contact_by_id(id)
 
         if record:
@@ -221,6 +183,37 @@ class AddressBook:
             return True
         else:
             return False
+
+    def update_birthday(self, id: Id, birthday: Birthday):
+        contact: Contact = self.get_contact_by_id(id)
+
+        if not contact:
+            return None
+
+        contact.birthday = birthday
+
+        return contact
+
+    def update_contact(self, id: Id, name: Name, phone: Phone) -> Contact:
+        contact: Contact = self.get_contact_by_id(id)
+
+        if not contact:
+            return None
+
+        contact.name = name
+        contact.phone = name
+
+        return contact
+    
+    def update_plate(self, id: Id, plate: Plate) -> Contact:
+        contact: Contact = self.get_contact_by_id(id)
+
+        if not contact:
+            return None
+
+        contact.plate = plate
+
+        return contact
 
     def add_address_by_id(self, id, field: Address):
         record = self.get_contact_by_id(id)
@@ -256,6 +249,7 @@ class AddressBook:
 
         return True
 
+    @DeprecationWarning
     def update_email_by_id(self, id, email):
         record = self.get_contact_by_id(id)
 
@@ -269,6 +263,36 @@ class AddressBook:
             return True
         else:
             return False
+
+    def update_email(self, id: Id, email: Email):
+        contact: Contact = self.get_contact_by_id(id)
+
+        if not contact:
+            return None
+
+        contact.email = email
+
+        return contact
+
+    def update_plate(self, id: Id, plate: Plate):
+        contact: Contact = self.get_contact_by_id(id)
+
+        if not contact:
+            return None
+
+        contact.plate = plate
+
+        return contact
+
+    def update_address(self, id: Id, address: Address):
+        contact: Contact = self.get_contact_by_id(id)
+
+        if not contact:
+            return None
+
+        contact.address = address
+
+        return contact
 
     def get_records(self):
         return list(map(lambda record: str(record).strip(), self.records))
@@ -336,7 +360,6 @@ class AddressBook:
                     del self.records[index]
                     message = 'Record deleted'
         return message
-    
 
     def remove_contact(self, id: Id) -> Contact:
         orig_contact: Contact

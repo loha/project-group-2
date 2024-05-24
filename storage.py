@@ -1,7 +1,7 @@
 import pickle
 from pathlib import Path
 from uuid import uuid4
-from entities import AddressBook, Name, Phone, Id, Birthday, CarNumber, Contact, Email, Address
+from entities import AddressBook, Name, Phone, Id, Birthday, Plate, Contact, Email, Address
 from note import NoteBook, Note
 
 _NAME_FIELD_KEY = "Name"
@@ -53,11 +53,18 @@ def add_birthday_to_user(id, date):
     serialize_address_book()
     return result
 
-
-def update_birthday(id, date):
-    result = address_book.update_birthday(id, date)
+@DeprecationWarning
+def update_birthday_val(id, date):
+    result = address_book.update_birthday_val(id, date)
     serialize_address_book()
     return result
+
+
+def update_birthday(id: Id, birthday: Birthday) -> Contact:
+    contact: Contact = address_book.update_birthday(id, birthday)
+    serialize_address_book()
+
+    return contact
 
 
 def get_birthday_by_name(name):
@@ -87,15 +94,34 @@ def add_email_to_user(id, email):
     serialize_address_book()
     return result
 
-
+@DeprecationWarning
 def edit_email_by_id(id, email):
     result = address_book.update_email_by_id(id, email)
     serialize_address_book()
     return result
 
 
+def update_email(id: Id, email: Email) -> Contact:
+    contact: Contact = address_book.update_email(id, email)
+    serialize_address_book()
+
+    return contact
+
+
+def update_plate(id: Id, plate: Plate) -> Contact:
+    contact: Contact = address_book.update_plate(id, plate)
+    serialize_address_book()
+
+    return contact
+
+def update_address(id: Id, addpress: Address) -> Contact:
+    contact: Contact = address_book.update_address(id, addpress)
+    serialize_address_book()
+
+    return contact
+
 def add_car_number_to_user(id, number):
-    car_number = CarNumber(number)
+    car_number = Plate(number)
     result = address_book.add_car_number_by_id(id, car_number)
     serialize_address_book()
     return result
@@ -109,12 +135,22 @@ def update_car_number(id, number):
 def get_contact_by_id(id: Id) -> Contact:
     return address_book.get_contact_by_id(id)
 
-def get_contact_by_name(name: str) -> Contact:
+
+def get_contact_by_id_new(id: Id) -> Contact:
+    return address_book.get_contact_by_id(id)
+
+
+@DeprecationWarning
+def get_contact_by_name_val(name: str) -> Contact:
     return address_book.get_record_by_field(_NAME_FIELD_KEY, name, None)
 
 
-def get_contact_by_phone(phone: str) -> Contact:
-    return address_book.get_record_by_field(_PHONE_FIELD_KEY, phone, None)
+def get_contact_by_name(name: Name) -> Contact:
+    return address_book.get_contact_by_name(name)
+
+
+def get_contact_by_phone(phone: Phone) -> Contact:
+    return address_book.get_contact_by_phone(phone)
 
 
 def delete_user_by_id(id):

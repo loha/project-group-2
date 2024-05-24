@@ -7,10 +7,10 @@ from decorators import body_parser, add_user_validation, edit_user_by_id_validat
     search_notes_validation, add_address_validation
 from storage import add_user_to_store, add_contact, find_all_users_from_store, update_user_by_id, \
     get_user_phone_by_name, add_birthday_to_user, get_birthday_by_name, get_birthdays, \
-    add_car_number_to_user, delete_user_by_id, get_contact_by_name, get_contact_by_phone, add_email_to_user, \
+    add_car_number_to_user, delete_user_by_id, get_contact_by_name_val, get_contact_by_phone, add_email_to_user, \
     add_new_note, find_all_notes, find_all_tags, update_note_by_id, get_notes_by_tag, find_note_by_id, \
     search_notes_by_substring, delete_note_by_id, add_address_by_id, edit_address_by_id, \
-    edit_email_by_id, update_birthday, update_car_number
+    edit_email_by_id, update_birthday_val, update_car_number
 from helper import args_to_string_parser
 
 
@@ -130,7 +130,7 @@ def add_birthday(payload):
 def edit_birthday(payload):
     id = payload[0]
     date = payload[1]
-    result = update_birthday(id, date)
+    result = update_birthday_val(id, date)
 
     if result:
         print(f"\nBirthday successfuly updated\n")
@@ -213,7 +213,7 @@ def edit_car_number(payload):
 @name_validation
 def find_contact_by_name(payload):
     name: str = payload[0]
-    print(get_contact_by_name(name))
+    print(get_contact_by_name_val(name))
 
 
 @phone_validation

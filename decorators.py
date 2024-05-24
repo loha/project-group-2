@@ -1,4 +1,4 @@
-from validations import is_only_chars, is_phone, is_uuid, is_date, is_car_number, is_tag, is_email, has_valid_address_chars
+from validations import is_only_chars, is_phone, is_uuid, is_date, is_plate, is_tag, is_email, has_valid_address_chars
 
 
 def body_parser(func):
@@ -165,7 +165,7 @@ def add_car_number_validation(func):
             if not is_uuid(payload[0]):
                 raise ValueError
 
-            if not is_car_number(payload[1]):
+            if not is_plate(payload[1]):
                 raise ValueError
 
             return func(*args, **kwargs)

@@ -7,7 +7,7 @@ def is_only_chars(value: str):
 
 def validate_name(val: str) -> None:
     if not re.match(R'^[A-z]+\s*[A-z]*$', val):
-        raise ValueError("Name must have only chars and spaces")
+        raise ValueError("Name can have only chars and spaces")
 
 
 def is_phone(val: str) -> bool:
@@ -32,13 +32,23 @@ def validate_id(val: str) -> None:
 
 
 def is_date(value):
-    match = re.search(r"^\d{4}\.\d{2}.\d{2}$", value)
+    match = re.match(r"^\d{4}\.\d{2}.\d{2}$", value)
     return bool(match)
 
 
-def is_car_number(value):
-    pattern = r'^[A-Z]{2}\d{4}[A-Z]{2}$'
+def validate_date(val: str) -> None:
+    if not is_date(val):
+        raise ValueError("Birthday must have format 'YYYY.MM.DD'")
+    
+
+def is_plate(value):
+    pattern = r"^[A-ZА-Я0-9]{3,7}$"
     return bool(re.match(pattern, value))
+
+
+def validate_plate(val: str) -> None:
+    if not is_plate(val):
+        raise ValueError("Plate must have from 3 to 7 alphanums")
 
 
 def is_tag(value):
@@ -49,5 +59,15 @@ def is_email(value: str):
     return bool(re.match(r"\w+@\w+\.\w+", value))
 
 
+def validate_email(val: str) -> None:
+    if not is_email(val):
+        raise ValueError("Email must have format 'xxx@xx.xx'")
+
+
 def has_valid_address_chars(value):
     return bool(re.match(r"^[a-zA-Z0-9\-\/\s\']+$", value))
+
+
+def validate_address(val: str) -> None:
+    if not has_valid_address_chars(val):
+        raise ValueError("Address can have only alphanums and spaces")
