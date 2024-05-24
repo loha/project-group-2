@@ -5,7 +5,7 @@ from decorators import body_parser, add_user_validation, edit_user_by_id_validat
     add_car_number_validation, name_validation, add_email_validation, \
     uuid_validation, add_note_validation, update_note_validation, show_notes_by_tag_validation, \
     search_notes_validation, add_address_validation
-from storage import add_user_to_store, find_all_users_from_store, update_user_by_id, \
+from storage import add_user_to_store, add_contact, find_all_users_from_store, update_user_by_id, \
     get_user_phone_by_name, add_birthday_to_user, get_birthday_by_name, get_birthdays, \
     add_car_number_to_user, delete_user_by_id, get_contact_by_name, get_contact_by_phone, add_email_to_user, \
     add_new_note, find_all_notes, find_all_tags, update_note_by_id, get_notes_by_tag, find_note_by_id, \

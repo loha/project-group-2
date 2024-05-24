@@ -1,32 +1,46 @@
 import pickle
 from pathlib import Path
 from uuid import uuid4
-from entities import AddressBook, Name, Phone, Id, Birthday, CarNumber, Record, Email, Address
+from entities import AddressBook, Name, Phone, Id, Birthday, CarNumber, Contact, Email, Address
 from note import NoteBook
 
 _NAME_FIELD_KEY = "Name"
 _PHONE_FIELD_KEY = "Phone"
 
-
+@DeprecationWarning
 def add_user_to_store(name, phone):
     id_record = Id()
     name_record = Name(name)
     phone_record = Phone(phone)
-    new_record = address_book.add_record(id_record, name_record, phone_record)
+    new_record = address_book.add_contact(id_record, name_record, phone_record)
     serialize_address_book()
 
     return new_record
 
+def add_contact(name: Name, phone: Phone) -> Contact:
+    contact: Contact = address_book.add_contact(Id(), name, phone)
+    serialize_address_book()
+
+    return contact
 
 def find_all_users_from_store():
     return address_book.get_records()
 
-
+@DeprecationWarning
 def update_user_by_id(id, new_name, new_phone):
     result = address_book.update_record_by_id(id, new_name, new_phone)
     serialize_address_book()
     return result
 
+def update_contact(id: Id, new_name: Name, new_phone: Phone) -> Contact:
+    result = address_book.update_contact(id, new_name, new_phone)
+    serialize_address_book()
+    return result
+
+def remove_contact(id: Id) -> Contact:
+    result = address_book.remove_contact(id)
+    serialize_address_book()
+    return result
 
 def get_user_phone_by_name(name):
     phone = address_book.get_record_by_field("Name", name, _PHONE_FIELD_KEY)
@@ -92,12 +106,14 @@ def update_car_number(id, number):
     serialize_address_book()
     return result
 
+def get_contact_by_id(id: Id) -> Contact:
+    return address_book.get_contact_by_id(id)
 
-def get_contact_by_name(name: str) -> Record:
+def get_contact_by_name(name: str) -> Contact:
     return address_book.get_record_by_field(_NAME_FIELD_KEY, name, None)
 
 
-def get_contact_by_phone(phone: str) -> Record:
+def get_contact_by_phone(phone: str) -> Contact:
     return address_book.get_record_by_field(_PHONE_FIELD_KEY, phone, None)
 
 

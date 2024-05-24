@@ -1,6 +1,7 @@
 import datetime
 from uuid import uuid4
 from helper import is_in_next_7_days
+import validations as check
 
 
 class Field:
@@ -22,14 +23,16 @@ class Field:
 
 
 class Name(Field):
-    def __init__(self, value) -> None:
+    def __init__(self, value: str) -> None:
+        check.validate_name(value)
         super().__init__()
         self.set_field_name("Name")
         self.set_value(value)
 
 
 class Phone(Field):
-    def __init__(self, value) -> None:
+    def __init__(self, value: str) -> None:
+        check.validate_phone(value)
         super().__init__()
         self.set_field_name("Phone")
         self.set_value(value)
@@ -43,10 +46,19 @@ class Email(Field):
 
 
 class Id(Field):
-    def __init__(self) -> None:
+    def __init__(self, value: str = None) -> None:
         super().__init__()
         self.set_field_name("ID")
-        self.set_value(str(uuid4()))
+        if value:
+            check.validate_id(value)
+            self.set_value(value)
+        else:
+            self.set_value(str(uuid4()))
+        
+    def __eq__(self, other):
+        if isinstance(other, Id):
+            return self.value == other.value
+        return False
 
 
 class Birthday(Field):
@@ -62,12 +74,19 @@ class CarNumber(Field):
         self.set_value(value)
 
 
-class Record:
+class Contact:
     def __init__(self) -> None:
+        # TODO: replace with plain fields
         self.fields = []
 
     def add_field(self, field):
         self.fields.append(field)
+
+    def get_id(self) -> Id:
+        for field in self.fields:
+            if field.get_field_name() == "ID":
+                return field
+        return None
 
     def get_field_value_by_name(self, field_name):
         for field in self.fields:
@@ -108,18 +127,26 @@ class AddressBook:
     def __init__(self) -> None:
         self.records = []
 
-    def add_record(self, *fields):
-        record = Record()
+    def add_contact(self, *fields) -> Contact:
+        contact = Contact()
 
         for field in fields:
-            record.add_field(field)
+            contact.add_field(field)
 
-        self.records.append(record)
+        self.records.append(contact)
 
-        return record
+        return contact
+    
+    def get_contact_by_id(self, id: Id) -> Contact:
+        for contact in self.records:
+            if contact.get_id() == id:
+                return contact
 
+        return None
+
+    @DeprecationWarning
     def update_record_by_id(self, id, new_name, new_phone):
-        record = self.get_record_by_id(id)
+        record = self.get_contact_by_id(id)
 
         if record:
             for field in record.fields:
@@ -134,7 +161,25 @@ class AddressBook:
             return True
         else:
             return False
+        
 
+    def update_contact(self, id: Id, new_name: Name, new_phone: Phone) -> Contact:
+        contact: Contact = self.get_contact_by_id(id)
+
+        if not contact:
+            return None
+
+        for field in contact.fields:
+            field_name = field.get_field_name()
+            if field_name == "Name":
+                field.set_value(new_name.get_field_value())
+            if field_name == "Phone":
+                field.set_value(new_phone.get_field_value())
+
+        return contact
+
+
+    @DeprecationWarning
     def get_record_by_id(self, id):
         for record in self.records:
             for field in record.fields:
@@ -154,7 +199,7 @@ class AddressBook:
         return None
 
     def add_birthday_by_id(self, id, field: Birthday):
-        record = self.get_record_by_id(id)
+        record = self.get_contact_by_id(id)
 
         if not record:
             return False
@@ -164,7 +209,7 @@ class AddressBook:
         return True
 
     def update_birthday(self, id, date):
-        record = self.get_record_by_id(id)
+        record = self.get_contact_by_id(id)
 
         if record:
             for field in record.fields:
@@ -178,7 +223,7 @@ class AddressBook:
             return False
 
     def add_address_by_id(self, id, field: Address):
-        record = self.get_record_by_id(id)
+        record = self.get_contact_by_id(id)
 
         if not record:
             return False
@@ -188,7 +233,7 @@ class AddressBook:
         return True
 
     def edit_address_by_id(self, id, address):
-        record = self.get_record_by_id(id)
+        record = self.get_contact_by_id(id)
 
         if record:
             for field in record.fields:
@@ -202,7 +247,7 @@ class AddressBook:
             return False
 
     def add_email(self, id, field: Email):
-        record = self.get_record_by_id(id)
+        record = self.get_contact_by_id(id)
 
         if not record:
             return False
@@ -212,7 +257,7 @@ class AddressBook:
         return True
 
     def update_email_by_id(self, id, email):
-        record = self.get_record_by_id(id)
+        record = self.get_contact_by_id(id)
 
         if record:
             for field in record.fields:
@@ -250,7 +295,7 @@ class AddressBook:
         return result_records
 
     def add_car_number_by_id(self, id, car_number):
-        record = self.get_record_by_id(id)
+        record = self.get_contact_by_id(id)
         has_car_number = False
         result = False
 
@@ -269,7 +314,7 @@ class AddressBook:
         return result
 
     def update_car_number(self, id, number):
-        record = self.get_record_by_id(id)
+        record = self.get_contact_by_id(id)
 
         if record:
             for field in record.fields:
@@ -282,6 +327,7 @@ class AddressBook:
         else:
             return False
 
+    @DeprecationWarning
     def delete_record_by_id(self, id):
         message = 'Record not found'
         for index, record in enumerate(self.records):
@@ -290,3 +336,14 @@ class AddressBook:
                     del self.records[index]
                     message = 'Record deleted'
         return message
+    
+
+    def remove_contact(self, id: Id) -> Contact:
+        orig_contact: Contact
+        for contact in self.records:
+            if contact.get_id() == id:
+                orig_contact = contact
+                del contact
+                return orig_contact
+
+        return None
