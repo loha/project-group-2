@@ -3,6 +3,7 @@ import re
 from typing import List, Dict, Any, Type, TypeVar
 
 import entities as model
+import note as note_model
 import storage as repo
 
 # Simulated address book
@@ -26,9 +27,10 @@ cmd_to_func: Dict[str, str] = {
     "Get Greetin Days": "get_greeting_days",
 
     "Add Note": "add_note",
-    "Update Note": "updaet_note",
+    "Edit Note": "edit_note",
     "Remove Note": "remove_note",
     "Get Note by Id": "get_note_by_id",
+    "List Tags": "list_tags",
     "Get Notes by Tag": "get_notes_by_tag",
     "Get Notes by Text": "find_notes_by_text",
     "List Notes": "list_notes"
@@ -229,7 +231,7 @@ def list_contacts(cmd: str) -> None:
     contacts: List[model.Contact] = repo.find_all_users_from_store()
 
     if not contacts:
-        msg = f"Contact NOT found"
+        msg = f"Contacts NOT found"
         win.addstr(2, 0, _header(msg))
         win.addstr(4, 0, "Press any key to continue")
         win.getch()
@@ -256,6 +258,226 @@ def list_contacts(cmd: str) -> None:
     win.addstr(two(line), 0, str(contact))
     win.addstr(two(line), 0, "Press any key to continue")
     win.getch()
+
+
+def add_note(cmd: str) -> None:
+    win.addstr(0, 0, _header(cmd))
+
+    new_note: str = _read_val_obj(2, "Note", note_model.Note)
+    
+    note: note_model.Note = repo.add_new_note(new_note)
+
+    msg = f"Contact successfully created"
+    win.addstr(6, 0, _header(msg))
+
+    win.addstr(8, 0, str(note))
+
+    win.addstr(10, 0, "Press any key to continue")
+    win.getch()
+
+
+def get_note_by_id(cmd: str) -> None:
+    win.addstr(0, 0, _header(cmd))
+
+    id: note_model.Note = _read_val_obj(2, "Id", str)
+
+    note: model.Contact = repo.get_note_by_id(id)
+
+    if not note:
+        msg = f"Note NOT found"
+        win.addstr(4, 0, _header(msg))
+    else:
+        msg = f"Note found"
+        win.addstr(4, 0, _header(msg))
+        win.addstr(6, 0, str(note))
+
+    win.addstr(8, 0, "Press any key to continue")
+    win.getch()
+
+
+def edit_note(cmd: str) -> None:
+    win.addstr(0, 0, _header(cmd))
+
+    id: model.Id = _read_val_obj(2, "Id", str)
+
+    note: note_model.Note = repo.get_note_by_id(id)
+
+    if not note:
+        msg = f"Note NOT found"
+        win.addstr(4, 0, _header(msg))
+        win.addstr(6, 0, "Press any key to continue")
+        win.getch()
+        return
+
+    win.addstr(4, 0, str(note))
+
+    updated_note: model.Name = _read_val_obj(6, "Note", note_model.Note)
+
+    res = repo.edit_note_by_id(id, updated_note)
+
+    msg = f"Note edited successfully"
+    win.addstr(8, 0, _header(msg))
+    win.addstr(10, 0, str(res))
+    win.addstr(12, 0, "Press any key to continue")
+    win.getch()
+
+
+def list_notes(cmd: str) -> None:
+    win.addstr(0, 0, _header(cmd))
+
+    notes: List[model.Contact] = repo.find_all_notes()
+
+    if not notes:
+        msg = f"Notes NOT found"
+        win.addstr(2, 0, _header(msg))
+        win.addstr(4, 0, "Press any key to continue")
+        win.getch()
+        return
+    
+    line: int = 2
+    for idx, note in enumerate(notes):
+        line = idx + 2
+        if _exceeds_win_size(line, win):
+            line -= 2
+            win.move(line, 0)
+            win.clrtoeol()
+            win.addstr(line, 0, "Press any key to continue")
+            win.getch()
+        win.addstr(line, 0, str(note))
+
+    if _exceeds_win_size(line + 6, win):
+        line = line - 6
+        win.move(line, 0)
+        win.clrtoeol()
+
+    
+    win.addstr(two(line), 0, "Press any key to continue")
+    win.getch()
+
+
+def remove_note(cmd: str) -> None:
+    win.addstr(0, 0, _header(cmd))
+
+    id: str = _read_val_obj(2, "Id", str)
+
+    note: model.Contact = repo.get_note_by_id(id)
+
+    if not note:
+        msg = f"Note NOT found"
+        win.addstr(3, 0, _header(msg))
+        win.addstr(5, 0, "Press any key to continue")
+        win.getch()
+        return
+
+    note = repo.remove_note(id)
+
+    msg = f"Contact removed successfully"
+    win.addstr(4, 0, _header(msg))
+    win.addstr(6, 0, str(note))
+    win.addstr(8, 0, "Press any key to continue")
+    win.getch()
+
+def list_tags(cmd: str) -> None:
+    win.addstr(0, 0, _header(cmd))
+
+    tags: List[str] = repo.find_all_tags()
+
+    if not tags:
+        msg = f"Tags NOT found"
+        win.addstr(2, 0, _header(msg))
+        win.addstr(4, 0, "Press any key to continue")
+        win.getch()
+        return
+    
+    line: int = 2
+    for idx, tag in enumerate(tags):
+        line = idx + 2
+        if _exceeds_win_size(line, win):
+            line -= 2
+            win.move(line, 0)
+            win.clrtoeol()
+            win.addstr(line, 0, "Press any key to continue")
+            win.getch()
+        win.addstr(line, 0, str(tag))
+
+    if _exceeds_win_size(line + 6, win):
+        line = line - 6
+        win.move(line, 0)
+        win.clrtoeol()
+
+    
+    win.addstr(two(line), 0, "Press any key to continue")
+    win.getch()
+
+def get_notes_by_tag(cmd: str) -> None:
+    win.addstr(0, 0, _header(cmd))
+
+    tag: str = _read_val_obj(2, "Tag", str)
+
+    notes: List[note_model.Note] = repo.get_notes_by_tag(tag)
+
+    if not notes:
+        msg = f"Notes NOT found"
+        win.addstr(2, 0, _header(msg))
+        win.addstr(4, 0, "Press any key to continue")
+        win.getch()
+        return
+    
+    line: int = 2
+    for idx, note in enumerate(notes):
+        line = idx + 2
+        if _exceeds_win_size(line, win):
+            line -= 2
+            win.move(line, 0)
+            win.clrtoeol()
+            win.addstr(line, 0, "Press any key to continue")
+            win.getch()
+        win.addstr(line, 0, str(note))
+
+    if _exceeds_win_size(line + 6, win):
+        line = line - 6
+        win.move(line, 0)
+        win.clrtoeol()
+
+    
+    win.addstr(two(line), 0, "Press any key to continue")
+    win.getch()
+
+
+def find_notes_by_text(cmd: str) -> None:
+    win.addstr(0, 0, _header(cmd))
+
+    substring: str = _read_val_obj(2, "Substring", str)
+
+    notes: List[note_model.Note] = repo.search_notes_by_substring(substring)
+
+    if not notes:
+        msg = f"Notes NOT found"
+        win.addstr(2, 0, _header(msg))
+        win.addstr(4, 0, "Press any key to continue")
+        win.getch()
+        return
+    
+    line: int = 2
+    for idx, note in enumerate(notes):
+        line = idx + 2
+        if _exceeds_win_size(line, win):
+            line -= 2
+            win.move(line, 0)
+            win.clrtoeol()
+            win.addstr(line, 0, "Press any key to continue")
+            win.getch()
+        win.addstr(line, 0, str(note))
+
+    if _exceeds_win_size(line + 6, win):
+        line = line - 6
+        win.move(line, 0)
+        win.clrtoeol()
+
+    
+    win.addstr(two(line), 0, "Press any key to continue")
+    win.getch()
+
 
 def two(line: int) -> int:
     return line + 2

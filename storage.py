@@ -2,7 +2,7 @@ import pickle
 from pathlib import Path
 from uuid import uuid4
 from entities import AddressBook, Name, Phone, Id, Birthday, CarNumber, Contact, Email, Address
-from note import NoteBook
+from note import NoteBook, Note
 
 _NAME_FIELD_KEY = "Name"
 _PHONE_FIELD_KEY = "Phone"
@@ -155,15 +155,17 @@ deserialize_address_book()
 #########################
 
 
-def add_new_note(new_note: str):
-    id = str(uuid4())
-    res = note_book.add_note_with_tads_parse(id, new_note)
+def add_new_note(new_note: Note):
+    res = note_book.add_note_with_tads_parse(new_note)
     serialize_note_book()
     return res
 
+def get_note_by_id(id: str):
+    res = note_book.get_note_by_id(id)
+    return res
 
-def update_note_by_id(id, new_text):
-    res = note_book.update_note_by_id(id, new_text)
+def edit_note_by_id(id, updated_note: Note):
+    res = note_book.edit_note_by_id(id, updated_note)
     serialize_note_book()
     return res
 
@@ -173,7 +175,7 @@ def find_all_notes():
 
 
 def find_all_tags():
-    return note_book.get_all_tags()
+    return note_book.find_all_tags()
 
 
 def get_notes_by_tag(tag: str):
@@ -188,8 +190,8 @@ def search_notes_by_substring(substring: str):
     return note_book.search_notes_by_substring(substring)
 
 
-def delete_note_by_id(id: str):
-    res = note_book.delete_note_by_id(id)
+def remove_note(id: str):
+    res = note_book.remove_note(id)
     serialize_note_book()
     return res
 
