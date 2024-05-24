@@ -6,31 +6,31 @@ import note as note_model
 import storage as repo
 
 cmd_to_func: Dict[str, str] = {
-    "Add Contact": "add_contact",
-    "Edit Contact": "edit_contact",
-    "Remove Contact": "remove_contact",
-    "Get Contact by Id": "get_contact_by_id",
-    "Get Contact by Name": "get_contact_by_name",
-    "Get Contact by Phone": "get_contact_by_phone",
-    "Get Contact by Plate": "get_contact_by_plate",
-    "List Contacts": "list_contacts",
+    "1. Add Contact": "add_contact",
+    "2. Edit Contact": "edit_contact",
+    "3. Remove Contact": "remove_contact",
+    "4. Get Contact by Id": "get_contact_by_id",
+    "5. Get Contact by Name": "get_contact_by_name",
+    "6. Get Contact by Phone": "get_contact_by_phone",
+    "7. Get Contact by Plate": "get_contact_by_plate",
+    "8. List Contacts": "list_contacts",
 
-    "Edit Birthday": "edit_birthday",
-    "Edit Address": "edit_address",
-    "Edit Email": "edit_email",
-    "Edit Plate": "edit_plate",
+    "9. Edit Birthday": "edit_birthday",
+    "10. Edit Address": "edit_address",
+    "11. Edit Email": "edit_email",
+    "12. Edit Plate": "edit_plate",
 
-    "Get Greetin Days": "get_greeting_days",
+    "13. Get Greetin Days": "get_greeting_days",
 
-    "Add Note": "add_note",
-    "Edit Note": "edit_note",
-    "Edit Note": "edit_note",
-    "Remove Note": "remove_note",
-    "Get Note by Id": "get_note_by_id",
-    "List Tags": "list_tags",
-    "Get Notes by Tag": "get_notes_by_tag",
-    "Get Notes by Text": "find_notes_by_text",
-    "List Notes": "list_notes"
+    "14. Add Note": "add_note",
+    "15. Edit Note": "edit_note",
+    "16. Edit Note": "edit_note",
+    "17. Remove Note": "remove_note",
+    "18. Get Note by Id": "get_note_by_id",
+    "19. List Tags": "list_tags",
+    "20. Get Notes by Tag": "get_notes_by_tag",
+    "21. Get Notes by Text": "find_notes_by_text",
+    "22. List Notes": "list_notes"
 }
 
 win: curses.window = None
