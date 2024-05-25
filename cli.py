@@ -335,6 +335,37 @@ def edit_birthday(cmd: str) -> None:
     win.addstr(12, 0, "Press any key to continue")
     win.getch()
 
+def get_greeting_days(cmd: str) -> None:
+    win.addstr(0, 0, _header(cmd))
+
+    contacts: List[model.Contact] = repo.get_birthdays()
+
+    if not contacts:
+        msg = f"Contacts NOT found"
+        win.addstr(2, 0, _header(msg))
+        win.addstr(4, 0, "Press any key to continue")
+        win.getch()
+        return
+    
+    line: int = 2
+    for idx, contact in enumerate(contacts):
+        line = idx + 2
+        if _exceeds_win_size(line, win):
+            line -= 2
+            win.move(line, 0)
+            win.clrtoeol()
+            win.addstr(line, 0, "Press any key to continue")
+            win.getch()
+        win.addstr(line, 0, str(contact))
+
+    if _exceeds_win_size(line + 6, win):
+        line = line - 6
+        win.move(line, 0)
+        win.clrtoeol()
+    
+    win.addstr(two(line), 0, "Press any key to continue")
+    win.getch()
+
 
 def edit_email(cmd: str) -> None:
     win.addstr(0, 0, _header(cmd))

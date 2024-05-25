@@ -77,6 +77,12 @@ class Contact:
 
     def get_id(self) -> Id:
         return self.id
+    
+    def get_birthday(self) -> Birthday:
+        return self.birthday
+    
+    def get_name(self) -> Name:
+        return self.name
 
     def __str__(self) -> str:
         return str(vars(self))
@@ -84,7 +90,7 @@ class Contact:
 
 class AddressBook:
     def __init__(self) -> None:
-        self.records: List[Field] = []
+        self.records: List[Contact] = []
 
     def add_contact(self, id: Id, name: Name, phone: Phone) -> Contact:
         contact: Contact = Contact(id, name, phone)
@@ -313,8 +319,7 @@ class AddressBook:
         year = today.year
 
         for record in self.records:
-            splited_birthday = record.get_field_value_by_name(
-                'Birthday').split(".")
+            splited_birthday = record.get_birthday().value.split(".")
             next_birthday = datetime.date(
                 year, int(
                     splited_birthday[1]), int(
@@ -322,7 +327,7 @@ class AddressBook:
 
             if is_in_next_7_days(next_birthday, today):
                 result_records.append({
-                    "name": record.get_field_value_by_name("Name"),
+                    "name": record.get_name().value,
                     "congratulation_date": next_birthday.strftime("%Y.%m.%d")
                 })
 
