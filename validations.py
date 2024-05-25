@@ -1,9 +1,5 @@
 import re
 
-@DeprecationWarning
-def is_only_chars(value: str):
-    return bool(re.match(r"[A-z]+", value))
-
 
 def validate_name(val: str) -> None:
     if not re.match(R'^[A-z]+\s*[A-z]*$', val):

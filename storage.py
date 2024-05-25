@@ -17,12 +17,6 @@ def add_contact(name: Name, phone: Phone) -> Contact:
 def find_all_users_from_store():
     return address_book.get_records()
 
-@DeprecationWarning
-def update_user_by_id(id, new_name, new_phone):
-    result = address_book.update_record_by_id(id, new_name, new_phone)
-    serialize_address_book()
-    return result
-
 def update_contact(id: Id, new_name: Name, new_phone: Phone) -> Contact:
     result = address_book.update_contact(id, new_name, new_phone)
     serialize_address_book()
@@ -79,12 +73,6 @@ def add_email_to_user(id, email):
     serialize_address_book()
     return result
 
-@DeprecationWarning
-def edit_email_by_id(id, email):
-    result = address_book.update_email_by_id(id, email)
-    serialize_address_book()
-    return result
-
 
 def update_email(id: Id, email: Email) -> Contact:
     contact: Contact = address_book.update_email(id, email)
@@ -123,11 +111,6 @@ def get_contact_by_id(id: Id) -> Contact:
 
 def get_contact_by_id_new(id: Id) -> Contact:
     return address_book.get_contact_by_id(id)
-
-
-@DeprecationWarning
-def get_contact_by_name_val(name: str) -> Contact:
-    return address_book.get_record_by_field(_NAME_FIELD_KEY, name, None)
 
 
 def get_contact_by_name(name: Name) -> Contact:

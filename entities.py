@@ -126,24 +126,6 @@ class AddressBook:
 
         return None
 
-    @DeprecationWarning
-    def update_record_by_id(self, id, new_name, new_phone):
-        record = self.get_contact_by_id(id)
-
-        if record:
-            for field in record.fields:
-                field_name = field.get_field_name()
-
-                if field_name == "Name":
-                    field.set_value(new_name)
-
-                if field_name == "Phone":
-                    field.set_value(new_phone)
-
-            return True
-        else:
-            return False
-
     def update_contact(self, id: Id, name: Name, phone: Phone) -> Contact:
         contact: Contact = self.get_contact_by_id(id)
 
@@ -155,26 +137,6 @@ class AddressBook:
 
         return contact
 
-    @DeprecationWarning
-    def get_record_by_id(self, id):
-        for record in self.records:
-            for field in record.fields:
-                if field.get_field_name() == "ID" and field.get_field_value() == id:
-                    return record
-        return None
-
-    @DeprecationWarning
-    def get_record_by_field(self, search_field, search_value, returned_field):
-        for record in self.records:
-            for field in record.fields:
-                if field.get_field_name() == search_field and field.get_field_value() == search_value:
-                    if returned_field:
-                        return record.get_field_value_by_name(returned_field)
-                    else:
-                        return record
-
-        return None
-
     def add_birthday_by_id(self, id, field: Birthday):
         record = self.get_contact_by_id(id)
 
@@ -184,21 +146,6 @@ class AddressBook:
         record.add_field(field)
 
         return True
-
-    @DeprecationWarning
-    def update_birthday_val(self, id, date):
-        record = self.get_contact_by_id(id)
-
-        if record:
-            for field in record.fields:
-                field_name = field.get_field_name()
-
-                if field_name == "Birthday":
-                    field.set_value(date)
-
-            return True
-        else:
-            return False
 
     def update_birthday(self, id: Id, birthday: Birthday):
         contact: Contact = self.get_contact_by_id(id)
@@ -264,21 +211,6 @@ class AddressBook:
         record.add_field(field)
 
         return True
-
-    @DeprecationWarning
-    def update_email_by_id(self, id, email):
-        record = self.get_contact_by_id(id)
-
-        if record:
-            for field in record.fields:
-                field_name = field.get_field_name()
-
-                if field_name == "Email":
-                    field.set_value(email)
-
-            return True
-        else:
-            return False
 
     def update_email(self, id: Id, email: Email):
         contact: Contact = self.get_contact_by_id(id)
@@ -365,16 +297,6 @@ class AddressBook:
             return True
         else:
             return False
-
-    @DeprecationWarning
-    def delete_record_by_id(self, id):
-        message = 'Record not found'
-        for index, record in enumerate(self.records):
-            for field in record.fields:
-                if field.get_field_name() == "ID" and field.get_field_value() == id:
-                    del self.records[index]
-                    message = 'Record deleted'
-        return message
 
     def remove_contact(self, id: Id) -> Contact:
         contact = self.get_contact_by_id(id)
