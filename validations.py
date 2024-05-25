@@ -37,7 +37,7 @@ def validate_date(val: str) -> None:
     
 
 def is_plate(value):
-    pattern = r"^[A-ZА-Я0-9]{3,7}$"
+    pattern = r"^[A-ZА-Я0-9]{3,8}$"
     return bool(re.match(pattern, value))
 
 

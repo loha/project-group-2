@@ -85,7 +85,7 @@ class Contact:
         return self.name
 
     def __str__(self) -> str:
-        return str(vars(self))
+        return f"Id: {self.id}. Name: {self.name}. Phone: {self.phone}. Birthday: {self.birthday}. Address: {self.address}. Email: {self.email}. Plate: {self.plate}"
 
 
 class AddressBook:
@@ -251,7 +251,12 @@ class AddressBook:
         year = today.year
 
         for record in self.records:
-            splited_birthday = record.get_birthday().value.split(".")
+            birthday: Birthday = record.get_birthday()
+
+            if not birthday:
+                continue
+
+            splited_birthday = birthday.value.split(".")
             next_birthday = datetime.date(
                 year, int(
                     splited_birthday[1]), int(

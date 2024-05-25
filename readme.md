@@ -16,26 +16,29 @@ python cli.py
 Start typing the command: # Інпут команди
 
 # Cписок всіх команд
-=> Add Contact # Теперішня команда, яку намагається вгадати термінал
-Edit Contact 
-Remove Contact
-Get Contact by Id
-Get Contact by Name
-Get Contact by Phone
-List Contacts
-Edit Birthday
-Edit Address
-Edit Plate
-Edit Email
-Get Greetin Days
-Add Note
-Edit Note
-Remove Note
-Get Note by Id
-List Tags
-Get Notes by Tag
-Get Notes by Text
-List Notes
+=> 1. Add Contact # Теперішня команда, яку намагається вгадати термінал
+2. Edit Contact
+3. Remove Contact
+4. Get Contact by Id
+5. Get Contact by Name
+6. Get Contact by Phone
+7. Get Contact by Plate
+8. List Contacts
+9. Edit Birthday
+10. Edit Address
+11. Edit Email
+12. Edit Plate
+13. Get Greetin Days
+14. Add Note
+15. Edit Note
+16. Edit Note
+17. Remove Note
+18. Get Note by Id
+19. List Tags
+20. Get Notes by Tag
+21. Get Notes by Text
+22. List Notes
+0. Exit
 ```
 При вводі команди інтерфейс намагається вгадати, яку команду ви хочете використати
 
