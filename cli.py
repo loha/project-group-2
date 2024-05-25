@@ -1,4 +1,5 @@
 import curses
+import sys
 from typing import List, Dict, Any, Type, TypeVar
 
 import entities as model
@@ -30,7 +31,8 @@ cmd_to_func: Dict[str, str] = {
     "19. List Tags": "list_tags",
     "20. Get Notes by Tag": "get_notes_by_tag",
     "21. Get Notes by Text": "get_notes_by_text",
-    "22. List Notes": "list_notes"
+    "22. List Notes": "list_notes",
+    "0. Exit": "exit"
 }
 
 
@@ -445,7 +447,7 @@ def list_notes(cmd: str) -> None:
         win.move(line, 0)
         win.clrtoeol()
 
-    win.addstr(plus_two(line), 0, PRESS_KEY_MSG)
+    win.addstr(line + 2, 0, PRESS_KEY_MSG)
     win.getch()
 
 
@@ -490,7 +492,7 @@ def list_tags(cmd: str) -> None:
         win.move(line, 0)
         win.clrtoeol()
 
-    win.addstr(plus_two(line), 0, PRESS_KEY_MSG)
+    win.addstr(line + 2, 0, PRESS_KEY_MSG)
     win.getch()
 
 
@@ -524,7 +526,7 @@ def get_notes_by_tag(cmd: str) -> None:
         win.move(line, 0)
         win.clrtoeol()
 
-    win.addstr(plus_two(line), 0, PRESS_KEY_MSG)
+    win.addstr(line + 2, 0, PRESS_KEY_MSG)
     win.getch()
 
 
@@ -558,16 +560,12 @@ def get_notes_by_text(cmd: str) -> None:
         win.move(line, 0)
         win.clrtoeol()
 
-    win.addstr(plus_two(line), 0, PRESS_KEY_MSG)
+    win.addstr(line + 2, 0, PRESS_KEY_MSG)
     win.getch()
 
 
-def plus_two(line: int) -> int:
-    return line + 2
-
-
-def one(line: int) -> int:
-    return line + 1
+def exit(cmd: str) -> None:
+    sys.exit(0)
 
 
 # Object Value Type
