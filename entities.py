@@ -76,7 +76,7 @@ class Contact:
     plate: Plate = None
 
     def __str__(self) -> str:
-        return str(vars(self))
+        return f"Id: {self.id}. Name: {self.name}. Phone: {self.phone}. Birthday: {self.birthday}. Address: {self.address}. Email: {self.email}. Plate: {self.plate}"
 
 
 class AddressBook:

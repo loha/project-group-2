@@ -29,9 +29,10 @@ cmd_to_func: Dict[str, str] = {
     "18. Get Note by Id": "get_note_by_id",
     "19. List Tags": "list_tags",
     "20. Get Notes by Tag": "get_notes_by_tag",
-    "21. Get Notes by Text": "find_notes_by_text",
+    "21. Get Notes by Text": "get_notes_by_text",
     "22. List Notes": "list_notes"
 }
+
 
 win: curses.window = None
 
@@ -136,139 +137,113 @@ def process_command(cmd: str) -> None:
 
 
 def add_contact(cmd: str) -> None:
-    win.addstr(0, 0, _header(cmd))
+    _print_header(cmd)
 
-    name: str = _read_val_obj(2, "Name", model.Name)
-    phone: str = _read_val_obj(4, "Phone", model.Phone)
+    name: str = _read_val_obj(2, model.Name)
+    phone: str = _read_val_obj(4, model.Phone)
 
     contact: model.Contact = repo.add_contact(name, phone)
 
-    msg = f"Contact successfully created"
-    win.addstr(6, 0, _header(msg))
-
+    win.addstr(6, 0, _border(OPER_CUCCESS_MSG))
     win.addstr(8, 0, str(contact))
 
-    win.addstr(10, 0, "Press any key to continue")
+    win.addstr(10, 0, PRESS_KEY_MSG)
     win.getch()
 
 
+PRESS_KEY_MSG = "Press any key to continue"
+OPER_CUCCESS_MSG = "Operation successful"
+
+
+def _print_header(cmd: str):
+    win.addstr(0, 0, _border(cmd))
+
+
 def get_contact_by_id(cmd: str) -> None:
-    win.addstr(0, 0, _header(cmd))
+    _print_header(cmd)
 
-    id: model.Id = _read_val_obj(2, "Id", model.Id)
+    id: model.Id = _read_val_obj(2, model.Id)
+    ent: model.Contact = repo.get_contact_by_id(id)
 
-    contact: model.Contact = repo.get_contact_by_id(id)
+    _print_get_footer(ent)
 
-    if not contact:
-        msg = f"Contact NOT found"
-        win.addstr(4, 0, _header(msg))
+
+# Main Entity Type
+E = TypeVar('E')
+
+
+def _print_get_footer(ent: E) -> None:
+    if not ent:
+        win.addstr(4, 0, _border("entity NOT found"))
+        win.addstr(6, 0, PRESS_KEY_MSG)
     else:
-        msg = f"Contact found"
-        win.addstr(4, 0, _header(msg))
-        win.addstr(6, 0, str(contact))
-
-    win.addstr(8, 0, "Press any key to continue")
+        win.addstr(4, 0, _border("entity found"))
+        win.addstr(6, 0, str(ent))
+        win.addstr(8, 0, PRESS_KEY_MSG)
+    
     win.getch()
 
 
 def get_contact_by_name(cmd: str) -> None:
-    win.addstr(0, 0, _header(cmd))
+    _print_header(cmd)
 
-    name: model.Name = _read_val_obj(2, "Name", model.Name)
+    name: model.Name = _read_val_obj(2, model.Name)
+    ent: model.Contact = repo.get_contact_by_name(name)
 
-    contact: model.Contact = repo.get_contact_by_name(name)
-
-    if not contact:
-        msg = f"Contact NOT found"
-        win.addstr(4, 0, _header(msg))
-    else:
-        msg = f"Contact found"
-        win.addstr(4, 0, _header(msg))
-        win.addstr(6, 0, str(contact))
-
-    win.addstr(8, 0, "Press any key to continue")
-    win.getch()
+    _print_get_footer(ent)
 
 
 def get_contact_by_phone(cmd: str) -> None:
-    win.addstr(0, 0, _header(cmd))
+    win.addstr(line, 0, _border(cmd))
 
-    phone: model.Phone = _read_val_obj(2, "Phone", model.Phone)
+    phone: model.Phone = _read_val_obj(2, model.Phone)
+    ent: model.Contact = repo.get_contact_by_phone(phone)
 
-    contact: model.Contact = repo.get_contact_by_phone(phone)
-
-    if not contact:
-        msg = f"Contact NOT found"
-        win.addstr(4, 0, _header(msg))
-    else:
-        msg = f"Contact found"
-        win.addstr(4, 0, _header(msg))
-        win.addstr(6, 0, str(contact))
-
-    win.addstr(8, 0, "Press any key to continue")
-    win.getch()
+    _print_get_footer(ent)
 
 
 def edit_contact(cmd: str) -> None:
-    win.addstr(0, 0, _header(cmd))
+    _print_header(cmd)
 
-    id: model.Id = _read_val_obj(2, "Id", model.Id)
+    id: model.Id = _read_val_obj(2, model.Id)
+    src_ent: model.Contact = repo.get_contact_by_id(id)
 
-    contact: model.Contact = repo.get_contact_by_id(id)
+    _print_edit_content(src_ent)
 
-    if not contact:
-        msg = f"Contact NOT found"
-        win.addstr(4, 0, _header(msg))
-        win.addstr(6, 0, "Press any key to continue")
-        win.getch()
-        return
+    name: model.Name = _read_val_obj(6, model.Name)
+    phone: model.Phone = _read_val_obj(8, model.Phone)
 
-    win.addstr(4, 0, str(contact))
-
-    name: model.Name = _read_val_obj(6, "Name", model.Name)
-    phone: model.Phone = _read_val_obj(8, "Phone", model.Phone)
-
-    contact = repo.update_contact(id, name, phone)
+    tgt_ent: model.Contact = repo.update_contact(id, name, phone)
 
     msg = f"Contact edited successfully"
-    win.addstr(10, 0, _header(msg))
-    win.addstr(12, 0, str(contact))
-    win.addstr(14, 0, "Press any key to continue")
+    win.addstr(10, 0, _border(msg))
+    win.addstr(12, 0, str(src_ent))
+    win.addstr(14, 0, PRESS_KEY_MSG)
     win.getch()
 
 
 def remove_contact(cmd: str) -> None:
-    win.addstr(0, 0, _header(cmd))
+    _print_header(cmd)
 
-    id: model.Id = _read_val_obj(2, "Id", model.Id)
+    id: model.Id = _read_val_obj(2, model.Id)
+    src_ent: model.Contact = repo.get_contact_by_id(id)
 
-    contact: model.Contact = repo.get_contact_by_id(id)
+    _print_edit_content(src_ent)
 
-    if not contact:
-        msg = f"Contact NOT found"
-        win.addstr(3, 0, _header(msg))
-        win.addstr(5, 0, "Press any key to continue")
-        win.getch()
-        return
+    tgt_ent = repo.remove_contact(id)
 
-    contact = repo.remove_contact(id)
-
-    msg = f"Contact removed successfully"
-    win.addstr(4, 0, _header(msg))
-    win.addstr(6, 0, str(contact))
-    win.addstr(8, 0, "Press any key to continue")
-    win.getch()
+    _print_edit_footer(tgt_ent)
 
 
 def list_contacts(cmd: str) -> None:
-    win.addstr(0, 0, _header(cmd))
+    _print_header(cmd)
 
     contacts: List[model.Contact] = repo.find_all_users_from_store()
 
     if not contacts:
         msg = f"Contacts NOT found"
-        win.addstr(2, 0, _header(msg))
-        win.addstr(4, 0, "Press any key to continue")
+        win.addstr(2, 0, _border(msg))
+        win.addstr(4, 0, PRESS_KEY_MSG)
         win.getch()
         return
 
@@ -279,7 +254,7 @@ def list_contacts(cmd: str) -> None:
             line -= 2
             win.move(line, 0)
             win.clrtoeol()
-            win.addstr(line, 0, "Press any key to continue")
+            win.addstr(line, 0, PRESS_KEY_MSG)
             win.getch()
         win.addstr(line, 0, str(contact))
 
@@ -288,191 +263,135 @@ def list_contacts(cmd: str) -> None:
         win.move(line, 0)
         win.clrtoeol()
 
-    msg = f"Contact removed successfully"
-    win.addstr(two(line), 0, _header(msg))
-    win.addstr(two(line), 0, str(contact))
-    win.addstr(two(line), 0, "Press any key to continue")
+    win.addstr(line + 2, 0, _border("-"))
+    win.addstr(line + 4, 0, PRESS_KEY_MSG)
     win.getch()
 
 
 def edit_birthday(cmd: str) -> None:
-    win.addstr(0, 0, _header(cmd))
+    _print_header(cmd)
 
-    id: model.Id = _read_val_obj(2, "Id", model.Id)
-    contact: model.Contact = repo.get_contact_by_id(id)
+    id: model.Id = _read_val_obj(2, model.Id)
+    src_ent: model.Contact = repo.get_contact_by_id(id)
 
-    if not contact:
-        msg = f"Contact NOT found"
-        win.addstr(4, 0, _header(msg))
-        win.addstr(6, 0, "Press any key to continue")
+    _print_edit_content(src_ent)
+
+    birthday: model.Birthday = _read_val_obj(6, model.Birthday)
+    tgt_ent: model.Contact = repo.update_birthday(id, birthday)
+
+    _print_edit_footer(tgt_ent)
+
+
+def _print_edit_content(ent: E) -> None:
+    if not ent:
+        win.addstr(4, 0, _border("entity NOT found"))
+        win.addstr(6, 0, PRESS_KEY_MSG)
         win.getch()
         return
 
-    win.addstr(4, 0, str(contact))
+    win.addstr(4, 0, str(ent))
 
-    birthday: model.Birthday = _read_val_obj(6, "Birthday", model.Birthday)
 
-    contact = repo.update_birthday(id, birthday)
-
-    msg = f"Birthday updated successfully"
-    win.addstr(8, 0, _header(msg))
-    win.addstr(10, 0, str(contact))
-    win.addstr(12, 0, "Press any key to continue")
+def _print_edit_footer(ent: E) -> None:
+    win.addstr(8, 0, _border(OPER_CUCCESS_MSG))
+    win.addstr(10, 0, str(ent))
+    win.addstr(12, 0, PRESS_KEY_MSG)
     win.getch()
 
 
 def edit_email(cmd: str) -> None:
-    win.addstr(0, 0, _header(cmd))
+    _print_header(cmd)
 
-    id: model.Id = _read_val_obj(2, "Id", model.Id)
+    id: model.Id = _read_val_obj(2, model.Id)
     contact: model.Contact = repo.get_contact_by_id(id)
 
-    if not contact:
-        msg = f"Contact NOT found"
-        win.addstr(4, 0, _header(msg))
-        win.addstr(6, 0, "Press any key to continue")
-        win.getch()
-        return
+    _print_edit_content(contact)
 
-    win.addstr(4, 0, str(contact))
-
-    email: model.Email = _read_val_obj(6, "Email", model.Email)
-
+    email: model.Email = _read_val_obj(6, model.Email)
     contact = repo.update_email(id, email)
 
-    msg = f"Email updated successfully"
-    win.addstr(8, 0, _header(msg))
-    win.addstr(10, 0, str(contact))
-    win.addstr(12, 0, "Press any key to continue")
-    win.getch()
+    _print_edit_footer(contact)
 
 
 def edit_plate(cmd: str) -> None:
-    win.addstr(0, 0, _header(cmd))
+    _print_header(cmd)
 
-    id: model.Id = _read_val_obj(2, "Id", model.Id)
-    contact: model.Contact = repo.get_contact_by_id(id)
+    id: model.Id = _read_val_obj(2, model.Id)
+    src_ent: model.Contact = repo.get_contact_by_id(id)
 
-    if not contact:
-        msg = f"Contact NOT found"
-        win.addstr(4, 0, _header(msg))
-        win.addstr(6, 0, "Press any key to continue")
-        win.getch()
-        return
+    _print_edit_content(src_ent)
 
-    win.addstr(4, 0, str(contact))
+    email: model.Plate = _read_val_obj(6, model.Plate)
+    tgt_ent = repo.update_plate(id, email)
 
-    email: model.Plate = _read_val_obj(6, "Plate", model.Plate)
-
-    contact = repo.update_plate(id, email)
-
-    msg = f"Plate updated successfully"
-    win.addstr(8, 0, _header(msg))
-    win.addstr(10, 0, str(contact))
-    win.addstr(12, 0, "Press any key to continue")
-    win.getch()
+    _print_edit_footer(tgt_ent)
 
 
 def edit_address(cmd: str) -> None:
-    win.addstr(0, 0, _header(cmd))
+    _print_header(cmd)
 
-    id: model.Id = _read_val_obj(2, "Id", model.Id)
-    contact: model.Contact = repo.get_contact_by_id(id)
+    id: model.Id = _read_val_obj(2, model.Id)
+    src_ent: model.Contact = repo.get_contact_by_id(id)
 
-    if not contact:
-        msg = f"Contact NOT found"
-        win.addstr(4, 0, _header(msg))
-        win.addstr(6, 0, "Press any key to continue")
-        win.getch()
-        return
+    _print_edit_content(src_ent)
 
-    win.addstr(4, 0, str(contact))
+    address: model.Address = _read_val_obj(6, model.Address)
+    tgt_ent = repo.update_address(id, address)
 
-    address: model.Address = _read_val_obj(6, "Address", model.Address)
-
-    contact = repo.update_address(id, address)
-
-    msg = f"Address updated successfully"
-    win.addstr(8, 0, _header(msg))
-    win.addstr(10, 0, str(contact))
-    win.addstr(12, 0, "Press any key to continue")
-    win.getch()
+    _print_edit_footer(tgt_ent)
 
 
 def add_note(cmd: str) -> None:
-    win.addstr(0, 0, _header(cmd))
+    _print_header(cmd)
 
-    new_note: str = _read_val_obj(2, "Note", note_model.Note)
-    
+    new_note: str = _read_val_obj(2, note_model.Note)
+
     note: note_model.Note = repo.add_new_note(new_note)
 
     msg = f"Note successfully created"
-    win.addstr(6, 0, _header(msg))
+    win.addstr(6, 0, _border(msg))
 
     win.addstr(8, 0, str(note))
 
-    win.addstr(10, 0, "Press any key to continue")
+    win.addstr(10, 0, PRESS_KEY_MSG)
     win.getch()
 
 
 def get_note_by_id(cmd: str) -> None:
-    win.addstr(0, 0, _header(cmd))
+    _print_header(cmd)
 
-    id: note_model.Note = _read_val_obj(2, "Id", str)
+    id: str = _read_val_obj(2, str)
+    ent: note_model.Note = repo.get_note_by_id(id)
 
-    note: model.Contact = repo.get_note_by_id(id)
-
-    if not note:
-        msg = f"Note NOT found"
-        win.addstr(4, 0, _header(msg))
-    else:
-        msg = f"Note found"
-        win.addstr(4, 0, _header(msg))
-        win.addstr(6, 0, str(note))
-
-    win.addstr(8, 0, "Press any key to continue")
-    win.getch()
+    _print_get_footer(ent)
 
 
 def edit_note(cmd: str) -> None:
-    win.addstr(0, 0, _header(cmd))
+    _print_header(cmd)
 
-    id: model.Id = _read_val_obj(2, "Id", str)
+    id: model.Id = _read_val_obj(2, str, "Id")
+    src_ent: note_model.Note = repo.get_note_by_id(id)
 
-    note: note_model.Note = repo.get_note_by_id(id)
+    _print_edit_content(src_ent)
 
-    if not note:
-        msg = f"Note NOT found"
-        win.addstr(4, 0, _header(msg))
-        win.addstr(6, 0, "Press any key to continue")
-        win.getch()
-        return
+    note: model.Name = _read_val_obj(6, note_model.Note)
+    tgt_ent: note_model.Note = repo.edit_note_by_id(id, note)
 
-    win.addstr(4, 0, str(note))
-
-    updated_note: model.Name = _read_val_obj(6, "Note", note_model.Note)
-
-    res = repo.edit_note_by_id(id, updated_note)
-
-    msg = f"Note edited successfully"
-    win.addstr(8, 0, _header(msg))
-    win.addstr(10, 0, str(res))
-    win.addstr(12, 0, "Press any key to continue")
-    win.getch()
+    _print_edit_footer(tgt_ent)
 
 
 def list_notes(cmd: str) -> None:
-    win.addstr(0, 0, _header(cmd))
+    _print_header(cmd)
 
     notes: List[model.Contact] = repo.find_all_notes()
 
     if not notes:
         msg = f"Notes NOT found"
-        win.addstr(2, 0, _header(msg))
-        win.addstr(4, 0, "Press any key to continue")
+        win.addstr(2, 0, _border(msg))
+        win.addstr(4, 0, PRESS_KEY_MSG)
         win.getch()
         return
-    
+
     line: int = 2
     for idx, note in enumerate(notes):
         line = idx + 2
@@ -480,7 +399,7 @@ def list_notes(cmd: str) -> None:
             line -= 2
             win.move(line, 0)
             win.clrtoeol()
-            win.addstr(line, 0, "Press any key to continue")
+            win.addstr(line, 0, PRESS_KEY_MSG)
             win.getch()
         win.addstr(line, 0, str(note))
 
@@ -489,45 +408,35 @@ def list_notes(cmd: str) -> None:
         win.move(line, 0)
         win.clrtoeol()
 
-    
-    win.addstr(two(line), 0, "Press any key to continue")
+    win.addstr(plus_two(line), 0, PRESS_KEY_MSG)
     win.getch()
 
 
 def remove_note(cmd: str) -> None:
-    win.addstr(0, 0, _header(cmd))
+    _print_header(cmd)
 
-    id: str = _read_val_obj(2, "Id", str)
+    id: str = _read_val_obj(2, str, "Id")
+    src_ent: note_model.Note = repo.get_note_by_id(id)
 
-    note: model.Contact = repo.get_note_by_id(id)
+    _print_edit_content(src_ent)
 
-    if not note:
-        msg = f"Note NOT found"
-        win.addstr(3, 0, _header(msg))
-        win.addstr(5, 0, "Press any key to continue")
-        win.getch()
-        return
+    tgt_ent: note_model.Note = repo.remove_note(id)
 
-    note = repo.remove_note(id)
+    _print_edit_footer
 
-    msg = f"Contact removed successfully"
-    win.addstr(4, 0, _header(msg))
-    win.addstr(6, 0, str(note))
-    win.addstr(8, 0, "Press any key to continue")
-    win.getch()
 
 def list_tags(cmd: str) -> None:
-    win.addstr(0, 0, _header(cmd))
+    _print_header(cmd)
 
     tags: List[str] = repo.find_all_tags()
 
     if not tags:
         msg = f"Tags NOT found"
-        win.addstr(2, 0, _header(msg))
-        win.addstr(4, 0, "Press any key to continue")
+        win.addstr(2, 0, _border(msg))
+        win.addstr(4, 0, PRESS_KEY_MSG)
         win.getch()
         return
-    
+
     line: int = 2
     for idx, tag in enumerate(tags):
         line = idx + 2
@@ -535,7 +444,7 @@ def list_tags(cmd: str) -> None:
             line -= 2
             win.move(line, 0)
             win.clrtoeol()
-            win.addstr(line, 0, "Press any key to continue")
+            win.addstr(line, 0, PRESS_KEY_MSG)
             win.getch()
         win.addstr(line, 0, str(tag))
 
@@ -544,12 +453,12 @@ def list_tags(cmd: str) -> None:
         win.move(line, 0)
         win.clrtoeol()
 
-    
-    win.addstr(two(line), 0, "Press any key to continue")
+    win.addstr(plus_two(line), 0, PRESS_KEY_MSG)
     win.getch()
 
+
 def get_notes_by_tag(cmd: str) -> None:
-    win.addstr(0, 0, _header(cmd))
+    _print_header(cmd)
 
     tag: str = _read_val_obj(2, "Tag", str)
 
@@ -557,11 +466,11 @@ def get_notes_by_tag(cmd: str) -> None:
 
     if not notes:
         msg = f"Notes NOT found"
-        win.addstr(2, 0, _header(msg))
-        win.addstr(4, 0, "Press any key to continue")
+        win.addstr(2, 0, _border(msg))
+        win.addstr(4, 0, PRESS_KEY_MSG)
         win.getch()
         return
-    
+
     line: int = 2
     for idx, note in enumerate(notes):
         line = idx + 2
@@ -569,7 +478,7 @@ def get_notes_by_tag(cmd: str) -> None:
             line -= 2
             win.move(line, 0)
             win.clrtoeol()
-            win.addstr(line, 0, "Press any key to continue")
+            win.addstr(line, 0, PRESS_KEY_MSG)
             win.getch()
         win.addstr(line, 0, str(note))
 
@@ -577,13 +486,13 @@ def get_notes_by_tag(cmd: str) -> None:
         line = line - 6
         win.move(line, 0)
         win.clrtoeol()
-    
-    win.addstr(two(line), 0, "Press any key to continue")
+
+    win.addstr(plus_two(line), 0, PRESS_KEY_MSG)
     win.getch()
 
 
-def find_notes_by_text(cmd: str) -> None:
-    win.addstr(0, 0, _header(cmd))
+def get_notes_by_text(cmd: str) -> None:
+    _print_header(cmd)
 
     substring: str = _read_val_obj(2, "Substring", str)
 
@@ -591,11 +500,11 @@ def find_notes_by_text(cmd: str) -> None:
 
     if not notes:
         msg = f"Notes NOT found"
-        win.addstr(2, 0, _header(msg))
-        win.addstr(4, 0, "Press any key to continue")
+        win.addstr(2, 0, _border(msg))
+        win.addstr(4, 0, PRESS_KEY_MSG)
         win.getch()
         return
-    
+
     line: int = 2
     for idx, note in enumerate(notes):
         line = idx + 2
@@ -603,7 +512,7 @@ def find_notes_by_text(cmd: str) -> None:
             line -= 2
             win.move(line, 0)
             win.clrtoeol()
-            win.addstr(line, 0, "Press any key to continue")
+            win.addstr(line, 0, PRESS_KEY_MSG)
             win.getch()
         win.addstr(line, 0, str(note))
 
@@ -612,12 +521,11 @@ def find_notes_by_text(cmd: str) -> None:
         win.move(line, 0)
         win.clrtoeol()
 
-    
-    win.addstr(two(line), 0, "Press any key to continue")
+    win.addstr(plus_two(line), 0, PRESS_KEY_MSG)
     win.getch()
 
 
-def two(line: int) -> int:
+def plus_two(line: int) -> int:
     return line + 2
 
 
@@ -625,28 +533,31 @@ def one(line: int) -> int:
     return line + 1
 
 
-def _header(text: str):
+# Object Value Type
+V = TypeVar('V')
+
+
+def _border(text: str):
     return text.center(40, '-') + "\n"
 
 
-T = TypeVar('T')
+def _read_val_obj(line: int, cls: Type[V], name: str = None) -> V:
+    field_name: str = name if name else cls.__name__
 
-
-def _read_val_obj(line_num: int, field_name: str, cls: Type[T]) -> T:
     info_msg = f"Enter {field_name}: "
 
-    win.addstr(line_num, 0, info_msg)
+    win.addstr(line, 0, info_msg)
     while True:
-        win.move(line_num, len(info_msg))
+        win.move(line, len(info_msg))
         curses.echo()
-        raw: bytes = win.getstr(line_num, len(info_msg))
+        raw: bytes = win.getstr(line, len(info_msg))
         input: str = raw.decode().strip()
 
         try:
             return cls(input)
         except ValueError as exp:
             win.addstr(str(exp))
-            win.move(line_num, len(info_msg))
+            win.move(line, len(info_msg))
             win.clrtoeol()
             continue
 
