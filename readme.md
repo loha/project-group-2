@@ -91,7 +91,7 @@ Press any key to continue
 
 Етапи:
 
-1. 1. Вписуємо потрібну команду 
+1. Вписуємо потрібну команду 
 ```bash
 Start typing the command: edit P # Натискаємо на Enter
 
