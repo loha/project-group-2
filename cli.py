@@ -113,7 +113,7 @@ def _process_key(key: int, query: str) -> str:
 
 
 def _is_backspace(key: int):
-    return key == 127
+    return key == 127 or key == 263
 
 
 def _is_escape(key: int):
