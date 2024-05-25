@@ -137,6 +137,9 @@ def get_contact_by_name(name: Name) -> Contact:
 def get_contact_by_phone(phone: Phone) -> Contact:
     return address_book.get_contact_by_phone(phone)
 
+def get_contact_by_plate(plate: Plate) -> Contact:
+    return address_book.get_contact_by_plate(plate)
+
 
 def delete_user_by_id(id):
     message = address_book.delete_record_by_id(id)

@@ -208,6 +208,24 @@ def get_contact_by_phone(cmd: str) -> None:
     win.addstr(8, 0, "Press any key to continue")
     win.getch()
 
+def get_contact_by_plate(cmd: str) -> None:
+    win.addstr(0, 0, _header(cmd))
+
+    phone: model.Plate = _read_val_obj(2, "Plate", model.Plate)
+
+    contact: model.Contact = repo.get_contact_by_plate(phone)
+
+    if not contact:
+        msg = f"Contact NOT found"
+        win.addstr(4, 0, _header(msg))
+    else:
+        msg = f"Contact found"
+        win.addstr(4, 0, _header(msg))
+        win.addstr(6, 0, str(contact))
+
+    win.addstr(8, 0, "Press any key to continue")
+    win.getch()
+
 
 def edit_contact(cmd: str) -> None:
     win.addstr(0, 0, _header(cmd))

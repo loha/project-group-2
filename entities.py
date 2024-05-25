@@ -112,6 +112,13 @@ class AddressBook:
                 return contact
 
         return None
+    
+    def get_contact_by_plate(self, plate: Plate) -> Contact:
+        for contact in self.records:
+            if contact.plate == plate:
+                return contact
+
+        return None
 
     @DeprecationWarning
     def update_record_by_id(self, id, new_name, new_phone):
