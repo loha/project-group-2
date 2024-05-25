@@ -1,32 +1,31 @@
 import pickle
 from pathlib import Path
 from uuid import uuid4
-from entities import AddressBook, Name, Phone, Id, Birthday, CarNumber, Record, Email, Address
-from note import NoteBook
+from entities import AddressBook, Name, Phone, Id, Birthday, Plate, Contact, Email, Address
+from note import NoteBook, Note
 
 _NAME_FIELD_KEY = "Name"
 _PHONE_FIELD_KEY = "Phone"
 
 
-def add_user_to_store(name, phone):
-    id_record = Id()
-    name_record = Name(name)
-    phone_record = Phone(phone)
-    new_record = address_book.add_record(id_record, name_record, phone_record)
+def add_contact(name: Name, phone: Phone) -> Contact:
+    contact: Contact = address_book.add_contact(Id(), name, phone)
     serialize_address_book()
 
-    return new_record
-
+    return contact
 
 def find_all_users_from_store():
     return address_book.get_records()
 
-
-def update_user_by_id(id, new_name, new_phone):
-    result = address_book.update_record_by_id(id, new_name, new_phone)
+def update_contact(id: Id, new_name: Name, new_phone: Phone) -> Contact:
+    result = address_book.update_contact(id, new_name, new_phone)
     serialize_address_book()
     return result
 
+def remove_contact(id: Id) -> Contact:
+    result = address_book.remove_contact(id)
+    serialize_address_book()
+    return result
 
 def get_user_phone_by_name(name):
     phone = address_book.get_record_by_field("Name", name, _PHONE_FIELD_KEY)
@@ -40,10 +39,11 @@ def add_birthday_to_user(id, date):
     return result
 
 
-def update_birthday(id, date):
-    result = address_book.update_birthday(id, date)
+def update_birthday(id: Id, birthday: Birthday) -> Contact:
+    contact: Contact = address_book.update_birthday(id, birthday)
     serialize_address_book()
-    return result
+
+    return contact
 
 
 def get_birthday_by_name(name):
@@ -74,14 +74,27 @@ def add_email_to_user(id, email):
     return result
 
 
-def edit_email_by_id(id, email):
-    result = address_book.update_email_by_id(id, email)
+def update_email(id: Id, email: Email) -> Contact:
+    contact: Contact = address_book.update_email(id, email)
     serialize_address_book()
-    return result
 
+    return contact
+
+
+def update_plate(id: Id, plate: Plate) -> Contact:
+    contact: Contact = address_book.update_plate(id, plate)
+    serialize_address_book()
+
+    return contact
+
+def update_address(id: Id, addpress: Address) -> Contact:
+    contact: Contact = address_book.update_address(id, addpress)
+    serialize_address_book()
+
+    return contact
 
 def add_car_number_to_user(id, number):
-    car_number = CarNumber(number)
+    car_number = Plate(number)
     result = address_book.add_car_number_by_id(id, car_number)
     serialize_address_book()
     return result
@@ -92,13 +105,23 @@ def update_car_number(id, number):
     serialize_address_book()
     return result
 
+def get_contact_by_id(id: Id) -> Contact:
+    return address_book.get_contact_by_id(id)
 
-def get_contact_by_name(name: str) -> Record:
-    return address_book.get_record_by_field(_NAME_FIELD_KEY, name, None)
+
+def get_contact_by_id_new(id: Id) -> Contact:
+    return address_book.get_contact_by_id(id)
 
 
-def get_contact_by_phone(phone: str) -> Record:
-    return address_book.get_record_by_field(_PHONE_FIELD_KEY, phone, None)
+def get_contact_by_name(name: Name) -> Contact:
+    return address_book.get_contact_by_name(name)
+
+
+def get_contact_by_phone(phone: Phone) -> Contact:
+    return address_book.get_contact_by_phone(phone)
+
+def get_contact_by_plate(plate: Plate) -> Contact:
+    return address_book.get_contact_by_plate(plate)
 
 
 def delete_user_by_id(id):
@@ -139,15 +162,17 @@ deserialize_address_book()
 #########################
 
 
-def add_new_note(new_note: str):
-    id = str(uuid4())
-    res = note_book.add_note_with_tads_parse(id, new_note)
+def add_new_note(new_note: Note):
+    res = note_book.add_note_with_tads_parse(new_note)
     serialize_note_book()
     return res
 
+def get_note_by_id(id: str):
+    res = note_book.get_note_by_id(id)
+    return res
 
-def update_note_by_id(id, new_text):
-    res = note_book.update_note_by_id(id, new_text)
+def edit_note_by_id(id, updated_note: Note):
+    res = note_book.edit_note_by_id(id, updated_note)
     serialize_note_book()
     return res
 
@@ -157,7 +182,7 @@ def find_all_notes():
 
 
 def find_all_tags():
-    return note_book.get_all_tags()
+    return note_book.find_all_tags()
 
 
 def get_notes_by_tag(tag: str):
@@ -172,8 +197,8 @@ def search_notes_by_substring(substring: str):
     return note_book.search_notes_by_substring(substring)
 
 
-def delete_note_by_id(id: str):
-    res = note_book.delete_note_by_id(id)
+def remove_note(id: str):
+    res = note_book.remove_note(id)
     serialize_note_book()
     return res
 

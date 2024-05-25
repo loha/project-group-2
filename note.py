@@ -1,9 +1,10 @@
 import re
-
+import validations as check
+from uuid import uuid4
 
 class Note:
-    def __init__(self, id: str, text: str) -> None:
-        self.id = id
+    def __init__(self, text: str) -> None:
+        self.id = str(uuid4())
         self.text = text
 
     def get_text(self) -> str:
@@ -14,6 +15,9 @@ class Note:
 
     def set_text(self, new_text: str):
         self.text = new_text
+    
+    def __str__(self) -> str:
+        return f"Id: {self.id}. Text: {self.text}"
 
 
 class NoteBook:
@@ -21,19 +25,14 @@ class NoteBook:
         self.tags_map = {}
         self.notes = []
 
-    def add_note_with_tads_parse(self, id, note_txt: str):
-        new_note_tags = self.__parse_note_tags(note_txt)
-        note = Note(id, note_txt)
+    def add_note_with_tads_parse(self, note: Note):
+        new_note_tags = self.__parse_note_tags(note.get_text())
 
         self.notes.append(note)
 
         self.__add_note_to_tags_map(new_note_tags, note)
 
-        return {
-            "result": True,
-            "note": note,
-            "tags": new_note_tags
-        }
+        return note
 
     def __parse_note_tags(self, note_txt: str) -> list[str]:
         return re.findall(r"#(\w+)", note_txt)
@@ -56,23 +55,24 @@ class NoteBook:
     def get_all_notes(self) -> list[Note]:
         return self.notes
 
-    def get_all_tags(self):
+    def find_all_tags(self):
         return sorted(self.tags_map.keys())
 
-    def update_note_by_id(self, id: str, new_text: str):
+    def edit_note_by_id(self, id: str, updated_note: Note):
         note = self.get_note_by_id(id)
 
         if not note:
-            return False
+            return None 
 
         self.__remove_old_note_tags(note)
 
-        new_note_tags = self.__parse_note_tags(new_text)
-        note.set_text(new_text)
+        text = updated_note.get_text()
+        new_note_tags = self.__parse_note_tags(text)
+        note.set_text(text)
 
         self.__add_note_to_tags_map(new_note_tags, note)
 
-        return True
+        return note
 
     def get_note_by_id(self, id):
         for note in self.notes:
@@ -109,13 +109,15 @@ class NoteBook:
 
         return res
 
-    def delete_note_by_id(self, id: str):
+    def remove_note(self, id: str):
         note = self.get_note_by_id(id)
 
         if not note:
-            return False
+            return None
+
+        res = str(note)
 
         self.__remove_old_note_tags(note)
         self.notes = list(filter(lambda note: note.get_id() != id, self.notes))
 
-        return True
+        return res
