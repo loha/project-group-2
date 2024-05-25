@@ -60,18 +60,97 @@ Enter Id: # Полу вводу даних
 
 ## Команди
 
+Команда: Add Contact - Додавання контакту
+
+Етапи:
+
+1. Вписуємо потрібну команду 
+```bash
+Start typing the command: add # Натискаємо на Enter
+
+=> 1. Add Contact
+10. Edit Address
+14. Add Note
+```
+
+2. Заповнюємо поле Name та Phone. Кожне поле валідується. Якщо все введено правильно, то контакт створюється
+```bash
+-------------1. Add Contact-------------
+
+Enter Name: Armen
+Enter Phone: +380962343322
+
+------Contact successfully created------
+
+{'id': e9118b02-82a2-4cc6-a13d-c3bea8215aaa, 'name': Armen, 'phone': +380962343322, 'birthday': None, 'address': None, 'email': None, 'plate': None}
+Press any key to continue
+```
+
+
+Команда: Edit Plate - Редагування номеру автомобіля 
+
+Етапи:
+
+1. Вписуємо потрібну команду 
+```bash
+Start typing the command: edit P # Натискаємо на Enter
+
+=> 12. Edit Plate
+```
+
+2. Вписуємо айді контакту, який хочемо редагувати. Потім вписуємо номер автомобіля і виводиться результат
+```bash
+-------------12. Edit Plate-------------
+
+Enter Id: e9118b02-82a2-4cc6-a13d-c3bea8215aaa
+
+{'id': e9118b02-82a2-4cc6-a13d-c3bea8215aaa, 'name': Armen, 'phone': +380962343322, 'birthday': None, 'address': None, 'email': None, 'plate': None}
+Enter Plate: AH8597
+Plate must have from 3 to 7 alphanums
+-------Plate updated successfully-------
+
+{'id': e9118b02-82a2-4cc6-a13d-c3bea8215aaa, 'name': Armen, 'phone': +380962343322, 'birthday': None, 'address': None, 'email': None, 'plate': AH8597}
+Press any key to continue
+```
+
+Команда: Get Contact by Plate - Пошук контакта по номеру автомобіля
+
+Етапи:
+
+1. Вписуємо потрібну команду
+
+```bash
+Start typing the command: get contact by pl # Натискаємо на Enter
+
+=> 7. Get Contact by Plate
+```
+
+2. Вписуємо номер автомобіля. Якщо такий номер є, то контакт виводиться
+
+```bash
+--------7. Get Contact by Plate---------
+
+Enter Plate: AH8597
+
+-------------Contact found--------------
+
+{'id': e9118b02-82a2-4cc6-a13d-c3bea8215aaa, 'name': Armen, 'phone': +380962343322, 'birthday': None, 'address': None, 'email': None, 'plate': AH8597}
+Press any key to continue
+```
+
+
 Команда: Add Note - Додавання нотатки
 
 Етапи:
 
-1 Вписуємо потрібну команду
+1. Вписуємо потрібну команду
 ```bash
 Start typing the command: add no # Натискаємо на Enter
 
 => Add Note
 ```
 
-2 Вписуємо нотатку в поле. В полі можна вписувати теги через символ '#' і теги автоматично розпарсяться і додадуться в окремий список. В цьому прикладі додався тег '#Lamborghini'
+2. Вписуємо нотатку в поле. В полі можна вписувати теги через символ '#' і теги автоматично розпарсяться і додадуться в окремий список. В цьому прикладі додався тег '#Lamborghini'
 ```bash
 ----------------Add Note----------------
 
@@ -90,14 +169,14 @@ Press any key to continue
 
 Етапи:
 
-1 Вписуємо команду 
+1. Вписуємо команду 
 ```bash
 Start typing the command: list n # Натискаємо на Enter
 
 => List Notes
 ```
 
-2 Виводиться список нотаток
+2. Виводиться список нотаток
 ```bash
 ---------------List Notes---------------
 
@@ -114,7 +193,7 @@ Press any key to continue
 
 Етапи:
 
-1 Вписуємо команду 
+1. Вписуємо команду 
 
 ```bash
 Start typing the command: List t # Натискаємо на Enter
@@ -122,7 +201,7 @@ Start typing the command: List t # Натискаємо на Enter
 => List Tags
 ```
 
-2 Виводиться список тегів
+2. Виводиться список тегів
 ```bash
 ---------------List Tags----------------
 
@@ -135,21 +214,21 @@ Press any key to continue
 
 Команда: Get Notes by Tag - вивід списку нотаток по тегу
 
-1 Вписуємо команду
+1. Вписуємо команду
 ```bash
 Start typing the command: Get Notes by Tag
 
 => Get Notes by Tag
 ```
 
-2 Вписуємо назву тега
+2. Вписуємо назву тега
 ```bash
 ------------Get Notes by Tag------------
 
 Enter Tag: Lamborghini
 ```
 
-3 Виводиться список нотаток по тегу
+3. Виводиться список нотаток по тегу
 ```bash
 Id: 8ada9a01-5523-41a2-9c41-5b91572e9132. Text: 2024.05.02 - Була викрадена Lamborghini diablo #Lamborghini
 
