@@ -7,15 +7,6 @@ from note import NoteBook, Note
 _NAME_FIELD_KEY = "Name"
 _PHONE_FIELD_KEY = "Phone"
 
-@DeprecationWarning
-def add_user_to_store(name, phone):
-    id_record = Id()
-    name_record = Name(name)
-    phone_record = Phone(phone)
-    new_record = address_book.add_contact(id_record, name_record, phone_record)
-    serialize_address_book()
-
-    return new_record
 
 def add_contact(name: Name, phone: Phone) -> Contact:
     contact: Contact = address_book.add_contact(Id(), name, phone)
@@ -50,12 +41,6 @@ def get_user_phone_by_name(name):
 def add_birthday_to_user(id, date):
     birthday = Birthday(date)
     result = address_book.add_birthday_by_id(id, birthday)
-    serialize_address_book()
-    return result
-
-@DeprecationWarning
-def update_birthday_val(id, date):
-    result = address_book.update_birthday_val(id, date)
     serialize_address_book()
     return result
 

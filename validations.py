@@ -15,8 +15,7 @@ def is_phone(val: str) -> bool:
     
 
 def validate_phone(val: str) -> None:
-    # if not is_phone(val):
-    if not val.isdigit():
+    if not is_phone(val):
         raise ValueError("Phone must have format '+380XXXXXXXXX'")
     
 

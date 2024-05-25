@@ -288,9 +288,6 @@ def list_contacts(cmd: str) -> None:
         win.move(line, 0)
         win.clrtoeol()
 
-    msg = f"Contact removed successfully"
-    win.addstr(two(line), 0, _header(msg))
-    win.addstr(two(line), 0, str(contact))
     win.addstr(two(line), 0, "Press any key to continue")
     win.getch()
 

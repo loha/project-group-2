@@ -75,6 +75,9 @@ class Contact:
     email: Email = None
     plate: Plate = None
 
+    def get_id(self) -> Id:
+        return self.id
+
     def __str__(self) -> str:
         return str(vars(self))
 
@@ -201,7 +204,7 @@ class AddressBook:
             return None
 
         contact.name = name
-        contact.phone = name
+        contact.phone = phone
 
         return contact
     
@@ -362,11 +365,11 @@ class AddressBook:
         return message
 
     def remove_contact(self, id: Id) -> Contact:
-        orig_contact: Contact
-        for contact in self.records:
-            if contact.get_id() == id:
-                orig_contact = contact
-                del contact
-                return orig_contact
+        contact = self.get_contact_by_id(id)
+
+        if contact:
+            deleted_contact = str(contact)
+            self.records = list(filter(lambda contact: contact.get_id() != id, self.records))
+            return deleted_contact
 
         return None
