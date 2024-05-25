@@ -1,9 +1,5 @@
 import re
 
-@DeprecationWarning
-def is_only_chars(value: str):
-    return bool(re.match(r"[A-z]+", value))
-
 
 def validate_name(val: str) -> None:
     if not re.match(R'^[A-z]+\s*[A-z]*$', val):
@@ -15,8 +11,7 @@ def is_phone(val: str) -> bool:
     
 
 def validate_phone(val: str) -> None:
-    # if not is_phone(val):
-    if not val.isdigit():
+    if not is_phone(val):
         raise ValueError("Phone must have format '+380XXXXXXXXX'")
     
 

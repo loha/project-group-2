@@ -144,7 +144,7 @@ def add_contact(cmd: str) -> None:
 
     contact: model.Contact = repo.add_contact(name, phone)
 
-    win.addstr(6, 0, _border(OPER_CUCCESS_MSG))
+    win.addstr(6, 0, _border(CUCCESS_MSG))
     win.addstr(8, 0, str(contact))
 
     win.addstr(10, 0, PRESS_KEY_MSG)
@@ -152,7 +152,7 @@ def add_contact(cmd: str) -> None:
 
 
 PRESS_KEY_MSG = "Press any key to continue"
-OPER_CUCCESS_MSG = "Operation successful"
+CUCCESS_MSG = "Operation successful"
 
 
 def _print_header(cmd: str):
@@ -180,7 +180,7 @@ def _print_get_footer(ent: E) -> None:
         win.addstr(4, 0, _border("entity found"))
         win.addstr(6, 0, str(ent))
         win.addstr(8, 0, PRESS_KEY_MSG)
-    
+
     win.getch()
 
 
@@ -194,10 +194,19 @@ def get_contact_by_name(cmd: str) -> None:
 
 
 def get_contact_by_phone(cmd: str) -> None:
-    win.addstr(line, 0, _border(cmd))
+    _print_header(cmd)
 
     phone: model.Phone = _read_val_obj(2, model.Phone)
     ent: model.Contact = repo.get_contact_by_phone(phone)
+
+    _print_get_footer(ent)
+
+
+def get_contact_by_plate(cmd: str) -> None:
+    win.addstr(0, 0, _header(cmd))
+
+    phone: model.Plate = _read_val_obj(2, "Plate", model.Plate)
+    ent: model.Contact = repo.get_contact_by_plate(phone)
 
     _print_get_footer(ent)
 
@@ -216,7 +225,7 @@ def edit_contact(cmd: str) -> None:
     tgt_ent: model.Contact = repo.update_contact(id, name, phone)
 
     msg = f"Contact edited successfully"
-    win.addstr(10, 0, _border(msg))
+    win.addstr(10, 0, _border(SUCC))
     win.addstr(12, 0, str(src_ent))
     win.addstr(14, 0, PRESS_KEY_MSG)
     win.getch()
@@ -238,7 +247,7 @@ def remove_contact(cmd: str) -> None:
 def list_contacts(cmd: str) -> None:
     _print_header(cmd)
 
-    contacts: List[model.Contact] = repo.find_all_users_from_store()
+    contacts: List[model.Contact] = repo.get_birthdays()
 
     if not contacts:
         msg = f"Contacts NOT found"
@@ -293,9 +302,41 @@ def _print_edit_content(ent: E) -> None:
 
 
 def _print_edit_footer(ent: E) -> None:
-    win.addstr(8, 0, _border(OPER_CUCCESS_MSG))
+    win.addstr(8, 0, _border(CUCCESS_MSG))
     win.addstr(10, 0, str(ent))
     win.addstr(12, 0, PRESS_KEY_MSG)
+    win.getch()
+
+
+def get_greeting_days(cmd: str) -> None:
+    win.addstr(0, 0, _border(cmd))
+
+    contacts: List[model.Contact] = repo.get_birthdays()
+
+    if not contacts:
+        msg = f"Contacts NOT found"
+        win.addstr(2, 0, _border(msg))
+        win.addstr(4, 0, PRESS_KEY_MSG)
+        win.getch()
+        return
+
+    line: int = 2
+    for idx, contact in enumerate(contacts):
+        line = idx + 2
+        if _exceeds_win_size(line, win):
+            line -= 2
+            win.move(line, 0)
+            win.clrtoeol()
+            win.addstr(line, 0, PRESS_KEY_MSG)
+            win.getch()
+        win.addstr(line, 0, str(contact))
+
+    if _exceeds_win_size(line + 6, win):
+        line = line - 6
+        win.move(line, 0)
+        win.clrtoeol()
+
+    win.addstr(line + 2, 0, PRESS_KEY_MSG)
     win.getch()
 
 
@@ -348,11 +389,8 @@ def add_note(cmd: str) -> None:
 
     note: note_model.Note = repo.add_new_note(new_note)
 
-    msg = f"Note successfully created"
-    win.addstr(6, 0, _border(msg))
-
+    win.addstr(6, 0, _border(CUCCESS_MSG))
     win.addstr(8, 0, str(note))
-
     win.addstr(10, 0, PRESS_KEY_MSG)
     win.getch()
 

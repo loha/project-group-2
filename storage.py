@@ -7,15 +7,6 @@ from note import NoteBook, Note
 _NAME_FIELD_KEY = "Name"
 _PHONE_FIELD_KEY = "Phone"
 
-@DeprecationWarning
-def add_user_to_store(name, phone):
-    id_record = Id()
-    name_record = Name(name)
-    phone_record = Phone(phone)
-    new_record = address_book.add_contact(id_record, name_record, phone_record)
-    serialize_address_book()
-
-    return new_record
 
 def add_contact(name: Name, phone: Phone) -> Contact:
     contact: Contact = address_book.add_contact(Id(), name, phone)
@@ -25,12 +16,6 @@ def add_contact(name: Name, phone: Phone) -> Contact:
 
 def find_all_users_from_store():
     return address_book.get_records()
-
-@DeprecationWarning
-def update_user_by_id(id, new_name, new_phone):
-    result = address_book.update_record_by_id(id, new_name, new_phone)
-    serialize_address_book()
-    return result
 
 def update_contact(id: Id, new_name: Name, new_phone: Phone) -> Contact:
     result = address_book.update_contact(id, new_name, new_phone)
@@ -50,12 +35,6 @@ def get_user_phone_by_name(name):
 def add_birthday_to_user(id, date):
     birthday = Birthday(date)
     result = address_book.add_birthday_by_id(id, birthday)
-    serialize_address_book()
-    return result
-
-@DeprecationWarning
-def update_birthday_val(id, date):
-    result = address_book.update_birthday_val(id, date)
     serialize_address_book()
     return result
 
@@ -91,12 +70,6 @@ def edit_address_by_id(id, address):
 def add_email_to_user(id, email):
     email = Email(email)
     result = address_book.add_email(id, email)
-    serialize_address_book()
-    return result
-
-@DeprecationWarning
-def edit_email_by_id(id, email):
-    result = address_book.update_email_by_id(id, email)
     serialize_address_book()
     return result
 
@@ -140,17 +113,15 @@ def get_contact_by_id_new(id: Id) -> Contact:
     return address_book.get_contact_by_id(id)
 
 
-@DeprecationWarning
-def get_contact_by_name_val(name: str) -> Contact:
-    return address_book.get_record_by_field(_NAME_FIELD_KEY, name, None)
-
-
 def get_contact_by_name(name: Name) -> Contact:
     return address_book.get_contact_by_name(name)
 
 
 def get_contact_by_phone(phone: Phone) -> Contact:
     return address_book.get_contact_by_phone(phone)
+
+def get_contact_by_plate(plate: Plate) -> Contact:
+    return address_book.get_contact_by_plate(plate)
 
 
 def delete_user_by_id(id):
