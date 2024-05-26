@@ -499,7 +499,7 @@ def list_tags(cmd: str) -> None:
 def get_notes_by_tag(cmd: str) -> None:
     _print_header(cmd)
 
-    tag: str = _read_val_obj(2, "Tag", str)
+    tag: str = _read_val_obj(2, str, "Tag")
 
     notes: List[note_model.Note] = repo.get_notes_by_tag(tag)
 
@@ -533,7 +533,7 @@ def get_notes_by_tag(cmd: str) -> None:
 def get_notes_by_text(cmd: str) -> None:
     _print_header(cmd)
 
-    substring: str = _read_val_obj(2, "Substring", str)
+    substring: str = _read_val_obj(2, str, "Substring")
 
     notes: List[note_model.Note] = repo.search_notes_by_substring(substring)
 
