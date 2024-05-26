@@ -58,9 +58,10 @@ def validate_email(val: str) -> None:
     if not is_email(val):
         raise ValueError("Email must have format 'xxx@xx.xx'")
 
-
+# Novoselytska Street, 3, Kyiv, 01901
 def has_valid_address_chars(value):
-    return bool(re.match(r"^[a-zA-Z0-9\-\/\s\']+$", value))
+    return True
+    # return bool(re.match(r"^[a-zA-Z0-9\-\/\s\']+$", value))
 
 
 def validate_address(val: str) -> None:
